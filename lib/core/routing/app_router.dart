@@ -7,9 +7,15 @@ import '../../features/auth/presentation/new_patient_placeholder_screen.dart';
 import '../../features/auth/presentation/otp_verification_screen.dart';
 import '../../features/auth/presentation/patient_type_selection_screen.dart';
 import '../../features/auth/presentation/user_type_selection_screen.dart';
+import '../../features/close_time/presentation/close_time_detail_screen.dart';
+import '../../features/close_time/presentation/close_time_requests_screen.dart';
+import '../../features/close_time/presentation/create_close_time_screen.dart';
 import '../../features/dashboard/presentation/mock_dashboards.dart';
 import '../../features/onboarding/presentation/language_selection_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/patients/presentation/patient_detail_screen.dart';
+import '../../features/patients/presentation/patient_search_screen.dart';
+import '../../features/profile/presentation/profile_screen.dart';
 import '../services/storage_service.dart';
 
 class AppRouter {
@@ -64,7 +70,43 @@ class AppRouter {
         path: '/internal-dashboard/:role',
         builder: (context, state) {
           final role = state.pathParameters['role'] ?? 'employee';
-          return MockInternalDashboardScreen(role: role);
+          return DashboardDispatcher(role: role);
+        },
+      ),
+
+      // Profile
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
+
+      // Close Time Requests
+      GoRoute(
+        path: '/close-time',
+        builder: (context, state) => const CloseTimeRequestsScreen(),
+      ),
+      GoRoute(
+        path: '/close-time/create',
+        builder: (context, state) => const CreateCloseTimeScreen(),
+      ),
+      GoRoute(
+        path: '/close-time/detail/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id'] ?? '0');
+          return CloseTimeDetailScreen(requestId: id);
+        },
+      ),
+
+      // Patients
+      GoRoute(
+        path: '/patients',
+        builder: (context, state) => const PatientSearchScreen(),
+      ),
+      GoRoute(
+        path: '/patient-detail/:code',
+        builder: (context, state) {
+          final code = state.pathParameters['code'] ?? '';
+          return PatientDetailScreen(patientCode: code);
         },
       ),
     ],

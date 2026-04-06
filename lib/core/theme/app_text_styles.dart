@@ -40,7 +40,7 @@ class AppTextStyles {
   static TextStyle h3(BuildContext context) => getFontFamily(context).copyWith(
         fontSize: 20,
         height: 28 / 20,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
         color: AppColors.headingText,
       );
 
@@ -76,10 +76,10 @@ class AppTextStyles {
         color: AppColors.bodyText,
       );
 
-  /// Button: 15/20 semibold
+  /// Button: 16/20 semibold — matches the bigger buttons
   static TextStyle button(BuildContext context) => getFontFamily(context).copyWith(
-        fontSize: 15,
-        height: 20 / 15,
+        fontSize: 16,
+        height: 20 / 16,
         fontWeight: FontWeight.w600,
         color: AppColors.white,
       );

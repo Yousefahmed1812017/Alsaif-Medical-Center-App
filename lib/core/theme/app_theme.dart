@@ -51,6 +51,30 @@ class AppTheme {
         headlineMedium: baseTextTheme.headlineMedium?.copyWith(
           fontSize: 20,
           height: 28 / 20,
+          fontWeight: FontWeight.w700,
+          color: AppColors.headingText,
+        ),
+        headlineSmall: baseTextTheme.headlineSmall?.copyWith(
+          fontSize: 18,
+          height: 26 / 18,
+          fontWeight: FontWeight.w700,
+          color: AppColors.headingText,
+        ),
+        titleLarge: baseTextTheme.titleLarge?.copyWith(
+          fontSize: 17,
+          height: 24 / 17,
+          fontWeight: FontWeight.w600,
+          color: AppColors.headingText,
+        ),
+        titleMedium: baseTextTheme.titleMedium?.copyWith(
+          fontSize: 15,
+          height: 22 / 15,
+          fontWeight: FontWeight.w600,
+          color: AppColors.headingText,
+        ),
+        titleSmall: baseTextTheme.titleSmall?.copyWith(
+          fontSize: 13,
+          height: 20 / 13,
           fontWeight: FontWeight.w600,
           color: AppColors.headingText,
         ),
@@ -84,13 +108,18 @@ class AppTheme {
           color: AppColors.mutedText,
         ),
       ),
+
+      // ─── App Bar — clean white, centered ─────────────────────────
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.headingText,
         elevation: 0,
         centerTitle: true,
-        scrolledUnderElevation: 0,
+        scrolledUnderElevation: 0.5,
+        surfaceTintColor: Colors.transparent,
       ),
+
+      // ─── Cards — white with subtle shadow ────────────────────────
       cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 0,
@@ -100,34 +129,50 @@ class AppTheme {
           side: const BorderSide(color: AppColors.border, width: 1),
         ),
       ),
+
+      // ─── Elevated Button — navy capsule, like reference ──────────
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
           backgroundColor: AppColors.primary500,
           foregroundColor: AppColors.white,
+          textStyle: baseTextTheme.labelLarge?.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.r12),
           ),
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.s24,
-            vertical: AppSpacing.s12,
+            horizontal: AppSpacing.s32,
+            vertical: AppSpacing.s16,
           ),
+          minimumSize: const Size(0, 52),
         ),
       ),
+
+      // ─── Outlined Button ─────────────────────────────────────────
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           elevation: 0,
           foregroundColor: AppColors.primary500,
-          side: const BorderSide(color: AppColors.primary500, width: 1),
+          side: const BorderSide(color: AppColors.primary500, width: 1.5),
+          textStyle: baseTextTheme.labelLarge?.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.r12),
           ),
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.s24,
-            vertical: AppSpacing.s12,
+            horizontal: AppSpacing.s32,
+            vertical: AppSpacing.s16,
           ),
+          minimumSize: const Size(0, 52),
         ),
       ),
+
+      // ─── Text Button ─────────────────────────────────────────────
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary500,
@@ -140,16 +185,18 @@ class AppTheme {
           ),
         ),
       ),
+
+      // ─── Input Decoration — outlined fields like the reference ───
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.surfaceAlt,
+        fillColor: AppColors.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.s16,
           vertical: AppSpacing.s16,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.r12),
-          borderSide: BorderSide.none,
+          borderSide: const BorderSide(color: AppColors.border, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.r12),
@@ -157,7 +204,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.r12),
-          borderSide: const BorderSide(color: AppColors.primary500, width: 1),
+          borderSide: const BorderSide(color: AppColors.primary500, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.r12),
@@ -165,17 +212,25 @@ class AppTheme {
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.r12),
-          borderSide: const BorderSide(color: AppColors.error, width: 1),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.5),
         ),
         hintStyle: baseTextTheme.bodyMedium?.copyWith(
           color: AppColors.mutedText,
         ),
+        labelStyle: baseTextTheme.bodyMedium?.copyWith(
+          color: AppColors.mutedText,
+        ),
+        prefixIconColor: AppColors.mutedText,
       ),
+
+      // ─── Divider ─────────────────────────────────────────────────
       dividerTheme: const DividerThemeData(
         color: AppColors.divider,
         thickness: 1,
         space: AppSpacing.s24,
       ),
+
+      // ─── Bottom Sheet ────────────────────────────────────────────
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.surface,
         elevation: 0,
@@ -185,6 +240,8 @@ class AppTheme {
           ),
         ),
       ),
+
+      // ─── Dialog ──────────────────────────────────────────────────
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surface,
         elevation: 0,
@@ -192,12 +249,16 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppRadius.r20),
         ),
       ),
+
+      // ─── Tab Bar ─────────────────────────────────────────────────
       tabBarTheme: const TabBarThemeData(
         labelColor: AppColors.primary500,
         unselectedLabelColor: AppColors.mutedText,
         indicatorColor: AppColors.primary500,
         indicatorSize: TabBarIndicatorSize.tab,
       ),
+
+      // ─── Chip ────────────────────────────────────────────────────
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.surfaceAlt,
         disabledColor: AppColors.border,
@@ -218,6 +279,14 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppRadius.r8),
           side: const BorderSide(color: AppColors.border),
         ),
+      ),
+
+      // ─── FloatingActionButton ────────────────────────────────────
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: AppColors.primary500,
+        foregroundColor: AppColors.white,
+        elevation: 4,
+        shape: CircleBorder(),
       ),
     );
   }
