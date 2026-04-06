@@ -91,7 +91,7 @@ class AppTheme {
         centerTitle: true,
         scrolledUnderElevation: 0,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -185,14 +185,14 @@ class AppTheme {
           ),
         ),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.r20),
         ),
       ),
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         labelColor: AppColors.primary500,
         unselectedLabelColor: AppColors.mutedText,
         indicatorColor: AppColors.primary500,

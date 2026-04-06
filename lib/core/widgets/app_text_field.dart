@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AppTextField extends StatelessWidget {
   const AppTextField({
@@ -22,7 +23,7 @@ class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? hintText;
   final String? labelText;
-  final IconData? prefixIcon;
+  final dynamic prefixIcon;
   final Widget? suffixIcon;
   final bool obscureText;
   final TextInputType? keyboardType;
@@ -51,7 +52,7 @@ class AppTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,
-        prefixIcon: prefixIcon != null ? Icon(prefixIcon, size: 20) : null,
+        prefixIcon: prefixIcon != null ? FaIcon(prefixIcon, size: 20) : null,
         suffixIcon: suffixIcon,
       ),
     );
