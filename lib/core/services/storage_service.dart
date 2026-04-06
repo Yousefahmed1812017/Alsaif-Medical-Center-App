@@ -11,7 +11,9 @@ class StorageService {
 
   static const String _keyOnboardingCompleted = 'onboarding_completed';
   static const String _keySelectedLanguage = 'selected_language'; // 'ar' or 'en'
+  static const String _keyAuthToken = 'auth_token';
 
+  // ─── Onboarding ─────────────────────────────────────────────────────
   static bool get isOnboardingCompleted =>
       _prefs.getBool(_keyOnboardingCompleted) ?? false;
 
@@ -19,10 +21,22 @@ class StorageService {
     await _prefs.setBool(_keyOnboardingCompleted, true);
   }
 
+  // ─── Language ───────────────────────────────────────────────────────
   static String? get selectedLanguage =>
       _prefs.getString(_keySelectedLanguage);
 
   static Future<void> setSelectedLanguage(String languageCode) async {
     await _prefs.setString(_keySelectedLanguage, languageCode);
+  }
+
+  // ─── Auth Token ─────────────────────────────────────────────────────
+  static String? get authToken => _prefs.getString(_keyAuthToken);
+
+  static Future<void> setAuthToken(String token) async {
+    await _prefs.setString(_keyAuthToken, token);
+  }
+
+  static Future<void> clearAuthToken() async {
+    await _prefs.remove(_keyAuthToken);
   }
 }

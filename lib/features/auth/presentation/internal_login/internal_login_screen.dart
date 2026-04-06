@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/services/api_service.dart';
+import '../../../../core/services/auth_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_app_bar.dart';
@@ -22,6 +24,7 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
 
   bool _obscurePassword = true;
   bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -32,28 +35,54 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
 
   void _onLogin() async {
     if (!_formKey.currentState!.validate()) return;
-    
-    setState(() => _isLoading = true);
 
-    // Mock API Auth Process
-    await Future.delayed(const Duration(seconds: 1));
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
-    if (!mounted) return;
-    setState(() => _isLoading = false);
+    try {
+      await AuthService.login(
+        username: _usernameController.text.trim(),
+        password: _passwordController.text,
+      );
 
-    // Detect role via mock username logic
-    String simulatedRole = 'employee';
-    final userText = _usernameController.text.toLowerCase();
-    
-    if (userText.contains('admin')) {
-      simulatedRole = 'admin';
-    } else if (userText.contains('doc')) {
-      simulatedRole = 'doctor';
-    } else if (userText.contains('manager')) {
-      simulatedRole = 'manager';
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+
+      // Determine role from the username input for routing
+      String simulatedRole = 'employee';
+      final userText = _usernameController.text.toLowerCase();
+
+      if (userText.contains('admin')) {
+        simulatedRole = 'admin';
+      } else if (userText.contains('doc')) {
+        simulatedRole = 'doctor';
+      } else if (userText.contains('manager')) {
+        simulatedRole = 'manager';
+      }
+
+      // Navigate to OTP verification or dashboard
+      context.push('/internal-otp/$simulatedRole');
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+      setState(() {
+        _isLoading = false;
+        _errorMessage = isArabic
+            ? 'فشل تسجيل الدخول: ${e.message}'
+            : 'Login failed: ${e.message}';
+      });
+    } catch (e) {
+      if (!mounted) return;
+      final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+      setState(() {
+        _isLoading = false;
+        _errorMessage = isArabic
+            ? 'حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.'
+            : 'Connection error. Please try again.';
+      });
     }
-
-    context.push('/internal-otp/$simulatedRole');
   }
 
   @override
@@ -128,6 +157,41 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
                     },
                   ),
                 ),
+
+                // Error message
+                if (_errorMessage != null) ...[
+                  const SizedBox(height: AppSpacing.s16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.s16,
+                      vertical: AppSpacing.s12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.error.withAlpha(25),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.error.withAlpha(80)),
+                    ),
+                    child: Row(
+                      children: [
+                        const FaIcon(
+                          FontAwesomeIcons.circleExclamation,
+                          size: 18,
+                          color: AppColors.error,
+                        ),
+                        const SizedBox(width: AppSpacing.s12),
+                        Expanded(
+                          child: Text(
+                            _errorMessage!,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: AppColors.error,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
                 const SizedBox(height: AppSpacing.s48),
 
                 // Submit Button
@@ -135,15 +199,6 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
                   text: isArabic ? 'تسجيل الدخول' : 'Login',
                   onPressed: _onLogin,
                   isLoading: _isLoading,
-                ),
-                
-                const SizedBox(height: AppSpacing.s24),
-                Text(
-                  isArabic 
-                    ? '(للتجربة: استخدم doc, admin, manager في اسم المستخدم للتحويل)' 
-                    : '(Note: type doc, admin, or manager in username for mock role)',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.mutedText),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),
