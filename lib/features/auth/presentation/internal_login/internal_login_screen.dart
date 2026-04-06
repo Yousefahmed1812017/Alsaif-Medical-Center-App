@@ -42,7 +42,7 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
     });
 
     try {
-      await AuthService.login(
+      final user = await AuthService.login(
         username: _usernameController.text.trim(),
         password: _passwordController.text,
       );
@@ -50,20 +50,8 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
       if (!mounted) return;
       setState(() => _isLoading = false);
 
-      // Determine role from the username input for routing
-      String simulatedRole = 'employee';
-      final userText = _usernameController.text.toLowerCase();
-
-      if (userText.contains('admin')) {
-        simulatedRole = 'admin';
-      } else if (userText.contains('doc')) {
-        simulatedRole = 'doctor';
-      } else if (userText.contains('manager')) {
-        simulatedRole = 'manager';
-      }
-
-      // Navigate to OTP verification or dashboard
-      context.push('/internal-otp/$simulatedRole');
+      // Navigate using the real userType from the API (employee, doctor, admin)
+      context.push('/internal-otp/${user.roleKey}');
     } on ApiException catch (e) {
       if (!mounted) return;
       final isArabic = Localizations.localeOf(context).languageCode == 'ar';
@@ -112,8 +100,8 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
                 const SizedBox(height: AppSpacing.s8),
                 Text(
                   isArabic
-                      ? 'الرجاء إدخال اسم المستخدم وكلمة المرور الخاصة بك للوصول إلى النظام.'
-                      : 'Please enter your username and password to access the system.',
+                      ? 'الرجاء إدخال البريد الإلكتروني وكلمة المرور الخاصة بك للوصول إلى النظام.'
+                      : 'Please enter your email and password to access the system.',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: AppColors.mutedText,
                       ),
@@ -121,12 +109,13 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
                 ),
                 const SizedBox(height: AppSpacing.s48),
 
-                // Username
+                // Email / Username
                 AppTextField(
                   controller: _usernameController,
-                  labelText: isArabic ? 'اسم المستخدم' : 'Username',
-                  hintText: isArabic ? 'أدخل اسم المستخدم' : 'Enter username',
-                  prefixIcon: FontAwesomeIcons.userShield,
+                  labelText: isArabic ? 'البريد الإلكتروني' : 'Email',
+                  hintText: isArabic ? 'أدخل البريد الإلكتروني' : 'Enter your email',
+                  prefixIcon: FontAwesomeIcons.envelope,
+                  keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   validator: (value) =>
                       value == null || value.isEmpty ? (isArabic ? 'مطلوب' : 'Required') : null,

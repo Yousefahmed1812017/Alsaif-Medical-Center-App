@@ -12,6 +12,7 @@ class StorageService {
   static const String _keyOnboardingCompleted = 'onboarding_completed';
   static const String _keySelectedLanguage = 'selected_language'; // 'ar' or 'en'
   static const String _keyAuthToken = 'auth_token';
+  static const String _keyUserProfile = 'user_profile';
 
   // ─── Onboarding ─────────────────────────────────────────────────────
   static bool get isOnboardingCompleted =>
@@ -38,5 +39,24 @@ class StorageService {
 
   static Future<void> clearAuthToken() async {
     await _prefs.remove(_keyAuthToken);
+  }
+
+  // ─── User Profile ──────────────────────────────────────────────────
+  static String? get userProfile => _prefs.getString(_keyUserProfile);
+
+  static Future<void> setUserProfile(String jsonString) async {
+    await _prefs.setString(_keyUserProfile, jsonString);
+  }
+
+  static Future<void> clearUserProfile() async {
+    await _prefs.remove(_keyUserProfile);
+  }
+
+  // ─── Clear All Session Data ────────────────────────────────────────
+  static Future<void> clearSession() async {
+    await Future.wait([
+      clearAuthToken(),
+      clearUserProfile(),
+    ]);
   }
 }

@@ -51,10 +51,7 @@ class AppDialog extends StatelessWidget {
         right: AppSpacing.s24,
         top: AppSpacing.s16,
       ),
-      actions: [
-        if (secondaryAction != null) secondaryAction!,
-        if (primaryAction != null) primaryAction!,
-      ],
+      actions: [?secondaryAction, ?primaryAction],
     );
   }
 }

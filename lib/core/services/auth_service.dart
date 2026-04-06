@@ -1,55 +1,59 @@
+import '../models/user_model.dart';
 import 'api_service.dart';
 import 'storage_service.dart';
 
-/// Result model returned after a successful login.
-class AuthResult {
-  final String token;
-  final String client;
-  final String message;
-
-  const AuthResult({
-    required this.token,
-    required this.client,
-    required this.message,
-  });
-}
-
-/// Handles authentication logic: calls API, persists token.
+/// Handles authentication logic: calls API, persists user data.
 class AuthService {
   AuthService._();
 
-  /// Attempts login with the given [username] and [password].
+  /// Cached user model for the current session.
+  static UserModel? _currentUser;
+
+  /// Attempts login with the given [username] (email) and [password].
   ///
-  /// On success, stores the token via [StorageService] and returns an [AuthResult].
-  /// On failure, throws an [ApiException] (from [ApiService]).
-  static Future<AuthResult> login({
+  /// Internally:
+  /// 1. Gets a bearer token from the app-level authenticate endpoint.
+  /// 2. Calls LoginUser with user credentials + bearer token.
+  /// 3. Stores the user profile locally.
+  ///
+  /// Returns the [UserModel] on success.
+  /// Throws [ApiException] on failure.
+  static Future<UserModel> login({
     required String username,
     required String password,
   }) async {
-    final data = await ApiService.authenticate(
+    final response = await ApiService.loginUser(
       username: username,
       password: password,
     );
 
-    final token = data['token'] as String;
-    final client = data['client'] as String? ?? '';
-    final message = data['message'] as String? ?? '';
+    final userData = response['data'] as Map<String, dynamic>;
+    final user = UserModel.fromJson(userData);
 
-    // Persist token for future API calls
-    await StorageService.setAuthToken(token);
+    // Persist user profile for the session
+    await StorageService.setUserProfile(user.toJsonString());
 
-    return AuthResult(
-      token: token,
-      client: client,
-      message: message,
-    );
+    _currentUser = user;
+    return user;
   }
 
-  /// Whether the user currently has a stored auth token.
-  static bool get isLoggedIn => StorageService.authToken != null;
+  /// Returns the current logged-in user, loading from storage if needed.
+  static UserModel? get currentUser {
+    if (_currentUser != null) return _currentUser;
 
-  /// Clears the stored auth token (logout).
+    final json = StorageService.userProfile;
+    if (json != null) {
+      _currentUser = UserModel.fromJsonString(json);
+    }
+    return _currentUser;
+  }
+
+  /// Whether the user currently has a stored profile.
+  static bool get isLoggedIn => StorageService.userProfile != null;
+
+  /// Clears stored session data (logout).
   static Future<void> logout() async {
-    await StorageService.clearAuthToken();
+    _currentUser = null;
+    await StorageService.clearSession();
   }
 }
