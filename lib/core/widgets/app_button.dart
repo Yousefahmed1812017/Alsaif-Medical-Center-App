@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
@@ -22,7 +23,7 @@ class AppButton extends StatelessWidget {
   final AppButtonType type;
   final bool isLoading;
   final bool isDisabled;
-  final IconData? icon;
+  final dynamic icon;
   final bool isFullWidth;
 
   @override
@@ -44,7 +45,7 @@ class AppButton extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.s12),
         ] else if (icon != null) ...[
-          Icon(icon, size: 20),
+          FaIcon(icon, size: 20),
           const SizedBox(width: AppSpacing.s8),
         ],
         Text(text),

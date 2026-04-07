@@ -17,7 +17,7 @@ class AppEmptyState extends StatelessWidget {
 
   final String title;
   final String message;
-  final IconData icon;
+  final dynamic icon;
   final String? actionText;
   final VoidCallback? onActionPressed;
 
@@ -30,7 +30,7 @@ class AppEmptyState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
+            FaIcon(
               icon,
               size: 64,
               color: AppColors.primary200,

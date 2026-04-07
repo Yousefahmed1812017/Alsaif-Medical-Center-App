@@ -28,7 +28,7 @@ class AppErrorState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Icon(
+            const FaIcon(
               FontAwesomeIcons.circleExclamation,
               size: 64,
               color: AppColors.error,
