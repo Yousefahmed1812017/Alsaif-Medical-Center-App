@@ -140,11 +140,13 @@ class AppRouter {
   );
 
   static String _getInitialLocation() {
-    if (!StorageService.isOnboardingCompleted) {
-      return '/onboarding';
-    }
+    // Language selection is always shown first so the user picks their language.
+    // After that we check onboarding, then go to user-type.
     if (StorageService.selectedLanguage == null) {
       return '/language-selection';
+    }
+    if (!StorageService.isOnboardingCompleted) {
+      return '/onboarding';
     }
     return '/user-type';
   }
