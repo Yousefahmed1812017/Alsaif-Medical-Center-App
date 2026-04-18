@@ -10,12 +10,13 @@ import '../../../core/theme/app_radius.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/app_app_bar.dart';
 
-/// Lists all close-time requests made by the current doctor.
+/// Lists all Close Time Requests for the logged-in doctor.
 class CloseTimeRequestsScreen extends StatefulWidget {
   const CloseTimeRequestsScreen({super.key});
 
   @override
-  State<CloseTimeRequestsScreen> createState() => _CloseTimeRequestsScreenState();
+  State<CloseTimeRequestsScreen> createState() =>
+      _CloseTimeRequestsScreenState();
 }
 
 class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
@@ -42,7 +43,8 @@ class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
       final response = await ApiService.getCloseRequests(docId: user.userId);
       final dataList = response['data'] as List<dynamic>;
       _requests = dataList
-          .map((e) => CloseTimeRequestModel.fromJson(e as Map<String, dynamic>))
+          .map((e) =>
+              CloseTimeRequestModel.fromJson(e as Map<String, dynamic>))
           .toList();
     } on ApiException catch (e) {
       _error = e.message;
@@ -59,7 +61,6 @@ class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
         return AppColors.success;
       case 'R':
         return AppColors.error;
-      case 'P':
       default:
         return AppColors.warning;
     }
@@ -71,7 +72,6 @@ class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
         return AppColors.successSoft;
       case 'R':
         return AppColors.errorSoft;
-      case 'P':
       default:
         return AppColors.warningSoft;
     }
@@ -99,24 +99,7 @@ class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
               ? _buildError(isArabic)
               : _requests.isEmpty
                   ? _buildEmpty(isArabic)
-                  : RefreshIndicator(
-                      onRefresh: _loadRequests,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.all(AppSpacing.s16),
-                        itemCount: _requests.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.s12),
-                        itemBuilder: (context, index) => _RequestCard(
-                          request: _requests[index],
-                          isArabic: isArabic,
-                          statusColor: _statusColor(_requests[index].requestStatus),
-                          statusBgColor: _statusBgColor(_requests[index].requestStatus),
-                          onTap: () async {
-                            await context.push('/close-time/detail/${_requests[index].requestId}');
-                            _loadRequests();
-                          },
-                        ),
-                      ),
-                    ),
+                  : _buildList(isArabic),
     );
   }
 
@@ -127,12 +110,16 @@ class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(FontAwesomeIcons.circleExclamation, size: 48, color: AppColors.error),
+            FaIcon(FontAwesomeIcons.circleExclamation,
+                size: 48, color: AppColors.error),
             const SizedBox(height: AppSpacing.s16),
             Text(
               _error!,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.error),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.copyWith(color: AppColors.error),
             ),
             const SizedBox(height: AppSpacing.s16),
             OutlinedButton.icon(
@@ -151,172 +138,193 @@ class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FaIcon(FontAwesomeIcons.calendarXmark, size: 56, color: AppColors.mutedText.withAlpha(120)),
+          FaIcon(FontAwesomeIcons.calendarXmark,
+              size: 56, color: AppColors.mutedText.withAlpha(120)),
           const SizedBox(height: AppSpacing.s16),
           Text(
-            isArabic ? 'لا توجد طلبات' : 'No Requests Found',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.mutedText),
+            isArabic ? 'لا توجد طلبات' : 'No Requests',
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: AppColors.mutedText),
           ),
           const SizedBox(height: AppSpacing.s8),
           Text(
-            isArabic ? 'اضغط + لإنشاء طلب جديد' : 'Tap + to create a new request',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.mutedText),
+            isArabic
+                ? 'اضغط + لإنشاء طلب إغلاق جديد'
+                : 'Tap + to create a new close time request',
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: AppColors.mutedText),
           ),
         ],
       ),
     );
   }
-}
 
-// ─── Request Card ─────────────────────────────────────────────────────────
-
-class _RequestCard extends StatelessWidget {
-  const _RequestCard({
-    required this.request,
-    required this.isArabic,
-    required this.statusColor,
-    required this.statusBgColor,
-    required this.onTap,
-  });
-
-  final CloseTimeRequestModel request;
-  final bool isArabic;
-  final Color statusColor;
-  final Color statusBgColor;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final statusLabel = isArabic ? request.statusLabelAr : request.statusLabelEn;
-    final timeRange = request.isFullDay
-        ? (isArabic ? 'يوم كامل' : 'Full Day')
-        : '${request.startTime ?? '--'} - ${request.endTime ?? '--'}';
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.s16),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.r16),
-          border: Border.all(color: AppColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(6),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
+  Widget _buildList(bool isArabic) {
+    return RefreshIndicator(
+      onRefresh: _loadRequests,
+      child: ListView.separated(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.s16,
+          AppSpacing.s8,
+          AppSpacing.s16,
+          AppSpacing.s48 * 2,
         ),
-        child: Row(
-          children: [
-            // Date column
-            Container(
-              width: 54,
-              padding: const EdgeInsets.symmetric(vertical: 10),
+        itemCount: _requests.length,
+        separatorBuilder: (context, i) =>
+            const SizedBox(height: AppSpacing.s12),
+        itemBuilder: (context, index) {
+          final req = _requests[index];
+          final statusLabel =
+              isArabic ? req.statusLabelAr : req.statusLabelEn;
+          final sc = _statusColor(req.requestStatus);
+          final sbg = _statusBgColor(req.requestStatus);
+
+          return GestureDetector(
+            onTap: () async {
+              await context.push('/close-time/detail/${req.requestId}');
+              _loadRequests();
+            },
+            child: Container(
+              padding: const EdgeInsets.all(AppSpacing.s16),
               decoration: BoxDecoration(
-                color: AppColors.primary500.withAlpha(15),
-                borderRadius: BorderRadius.circular(AppRadius.r12),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    _dayFromDate(request.closeTimeDate),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.primary500,
-                        ),
-                  ),
-                  Text(
-                    _monthFromDate(request.closeTimeDate),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.primary500,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                        ),
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.r16),
+                border: Border.all(color: AppColors.border),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(6),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(width: AppSpacing.s12),
-
-            // Info
-            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    request.closeTimeDate,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.headingText,
-                        ),
-                  ),
-                  const SizedBox(height: 4),
+                  // ── Top row: date + status badge ────────────────
                   Row(
                     children: [
-                      FaIcon(FontAwesomeIcons.clock, size: 12, color: AppColors.mutedText),
-                      const SizedBox(width: 6),
-                      Text(
-                        timeRange,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppColors.mutedText,
+                      Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary500.withAlpha(15),
+                          borderRadius:
+                              BorderRadius.circular(AppRadius.r12),
+                        ),
+                        child: const Center(
+                          child: FaIcon(FontAwesomeIcons.calendarDay,
+                              size: 18, color: AppColors.primary500),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.s12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              req.closeTimeDate,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.headingText,
+                                  ),
                             ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${isArabic ? 'رقم الطلب:' : 'Request #'}${req.requestId}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: AppColors.mutedText,
+                                    fontSize: 11,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: sbg,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          statusLabel,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                color: sc,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 11,
+                              ),
+                        ),
                       ),
                     ],
                   ),
-                  if (request.notes != null && request.notes!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      request.notes!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.mutedText,
+
+                  const SizedBox(height: AppSpacing.s12),
+                  Divider(
+                      height: 1,
+                      color: AppColors.border.withAlpha(120)),
+                  const SizedBox(height: AppSpacing.s12),
+
+                  // ── Bottom row: time info ──────────────────────
+                  Row(
+                    children: [
+                      FaIcon(FontAwesomeIcons.clock,
+                          size: 12, color: AppColors.mutedText),
+                      const SizedBox(width: 6),
+                      Text(
+                        req.isFullDay
+                            ? (isArabic ? 'يوم كامل' : 'Full Day')
+                            : '${req.startTime ?? '--'} - ${req.endTime ?? '--'}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(
+                              color: AppColors.bodyText,
+                              fontSize: 12,
+                            ),
+                      ),
+                      if (req.notes != null &&
+                          req.notes!.isNotEmpty) ...[
+                        const SizedBox(width: AppSpacing.s16),
+                        FaIcon(FontAwesomeIcons.noteSticky,
+                            size: 11, color: AppColors.mutedText),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            req.notes!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color: AppColors.mutedText,
+                                  fontSize: 11,
+                                ),
                           ),
-                    ),
-                  ],
+                        ),
+                      ],
+                    ],
+                  ),
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacing.s8),
-
-            // Status badge
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: statusBgColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                statusLabel,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: statusColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 11,
-                    ),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
-  }
-
-  String _dayFromDate(String date) {
-    try {
-      return DateTime.parse(date).day.toString();
-    } catch (_) {
-      return '--';
-    }
-  }
-
-  String _monthFromDate(String date) {
-    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-    try {
-      return months[DateTime.parse(date).month - 1];
-    } catch (_) {
-      return '';
-    }
   }
 }

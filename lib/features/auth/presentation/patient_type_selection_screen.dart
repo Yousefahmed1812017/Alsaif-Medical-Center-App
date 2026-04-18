@@ -21,12 +21,19 @@ class PatientTypeSelectionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(flex: 1),
-              // Logo or Header Graphic placeholder
+              // Logo or Header Graphic
               Center(
-                child: FaIcon(
-                  FontAwesomeIcons.hospital,
-                  size: 64,
-                  color: AppColors.primary500,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return FaIcon(
+                      FontAwesomeIcons.hospital,
+                      size: 64,
+                      color: AppColors.primary500,
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: AppSpacing.s32),

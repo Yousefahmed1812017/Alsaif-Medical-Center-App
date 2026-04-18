@@ -93,7 +93,7 @@ class EmployeeDashboardScreen extends StatelessWidget {
                         icon: FontAwesomeIcons.calendarPlus,
                         label: isArabic ? 'موعد جديد' : 'New Appointment',
                         color: AppColors.success,
-                        onTap: () {},
+                        onTap: () => context.push('/booking'),
                       ),
                       QuickActionTile(
                         icon: FontAwesomeIcons.headset,
@@ -102,10 +102,10 @@ class EmployeeDashboardScreen extends StatelessWidget {
                         onTap: () {},
                       ),
                       QuickActionTile(
-                        icon: FontAwesomeIcons.clipboardQuestion,
-                        label: isArabic ? 'استفسارات' : 'Inquiries',
+                        icon: FontAwesomeIcons.listCheck,
+                        label: isArabic ? 'المهام' : 'Tasks',
                         color: AppColors.warning,
-                        onTap: () {},
+                        onTap: () => context.push('/todo-tasks'),
                       ),
                     ],
                   ),
