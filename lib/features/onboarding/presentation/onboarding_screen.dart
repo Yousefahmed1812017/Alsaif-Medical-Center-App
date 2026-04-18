@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../main.dart';
@@ -148,60 +149,173 @@ class OnboardingScreenState extends State<OnboardingScreen>
       textDirection: isAr ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         backgroundColor: kObWhite,
-        body: Stack(
-          children: [
-            // Page view (illustrations fill top ~55%)
-            PageView.builder(
-              controller: pageCtrl,
-              onPageChanged: onPageChanged,
-              itemCount: kOnboardingSlides.length,
-              itemBuilder: (ctx, i) => kOnboardingSlides[i].buildIllustration(),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFFF3F8FD),
+                Color(0xFFE0EDF9),
+                Color(0xFFF3F8FD),
+              ],
+              stops: [0.0, 0.5, 1.0],
             ),
-            // Top bar: language toggle + skip
-            SafeArea(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    LanguageToggleButton(isArabic: isAr, onTap: toggleLanguage),
-                    if (currentIdx < kOnboardingSlides.length - 1)
-                      TextButton(
-                        onPressed: onSkip,
-                        style: TextButton.styleFrom(
-                          foregroundColor: kObMuted,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
-                        child: Text(isAr ? 'تخطي' : 'Skip',
-                            style: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
-                      ),
-                  ],
+          ),
+          child: Stack(
+            children: [
+              // Page view (illustrations fill top ~55%)
+              PageView.builder(
+                controller: pageCtrl,
+                onPageChanged: onPageChanged,
+                itemCount: kOnboardingSlides.length,
+                itemBuilder: (ctx, i) => _AnimatedIllustrationWrapper(
+                  key: ValueKey('illustration_$i'),
+                  child: kOnboardingSlides[i].buildIllustration(),
                 ),
               ),
-            ),
-            // Bottom panel
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: BottomPanelWidget(
-                slide: slide,
-                isAr: isAr,
-                currentIndex: currentIdx,
-                totalSlides: kOnboardingSlides.length,
-                fadeAnimation: fadeAnim,
-                slideAnimation: slideAnim,
-                onNext: onNext,
+              // Top bar: logo + language toggle + skip
+              SafeArea(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          LanguageToggleButton(
+                              isArabic: isAr, onTap: toggleLanguage),
+                          if (currentIdx < kOnboardingSlides.length - 1)
+                            TextButton(
+                              onPressed: onSkip,
+                              style: TextButton.styleFrom(
+                                foregroundColor: kObMuted,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 6),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                              ),
+                              child: Text(isAr ? 'تخطي' : 'Skip',
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500)),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      FadeTransition(
+                        opacity: fadeAnim,
+                        child: const _OnboardingLogo(),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+              // Bottom panel
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: BottomPanelWidget(
+                  slide: slide,
+                  isAr: isAr,
+                  currentIndex: currentIdx,
+                  totalSlides: kOnboardingSlides.length,
+                  fadeAnimation: fadeAnim,
+                  slideAnimation: slideAnim,
+                  onNext: onNext,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  ANIMATED LOGO HEADER
+// ════════════════════════════════════════════════════════════
+class _OnboardingLogo extends StatelessWidget {
+  const _OnboardingLogo();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 64,
+      height: 64,
+      decoration: BoxDecoration(
+        color: kObWhite,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: kOb500.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Image.asset(
+        'assets/images/logo.png',
+        fit: BoxFit.contain,
+        errorBuilder: (ctx, err, stack) => const FaIcon(
+          FontAwesomeIcons.hospital,
+          color: kOb500,
+          size: 32,
+        ),
+      ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  ILLUSTRATION ENTRY ANIMATION WRAPPER
+// ════════════════════════════════════════════════════════════
+class _AnimatedIllustrationWrapper extends StatefulWidget {
+  const _AnimatedIllustrationWrapper({super.key, required this.child});
+  final Widget child;
+
+  @override
+  State<_AnimatedIllustrationWrapper> createState() =>
+      _AnimatedIllustrationWrapperState();
+}
+
+class _AnimatedIllustrationWrapperState
+    extends State<_AnimatedIllustrationWrapper>
+    with SingleTickerProviderStateMixin {
+  late AnimationController ctrl;
+  late Animation<double> fade;
+  late Animation<Offset> slide;
+
+  @override
+  void initState() {
+    super.initState();
+    ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 650),
+    );
+    fade = CurvedAnimation(parent: ctrl, curve: Curves.easeOut);
+    slide = Tween<Offset>(
+      begin: const Offset(0, 0.12),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeOutCubic));
+    ctrl.forward();
+  }
+
+  @override
+  void dispose() {
+    ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: fade,
+      child: SlideTransition(position: slide, child: widget.child),
     );
   }
 }
