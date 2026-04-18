@@ -16,6 +16,10 @@ import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/patients/presentation/patient_detail_screen.dart';
 import '../../features/patients/presentation/patient_search_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/todo_tasks/presentation/todo_tasks_screen.dart';
+import '../../features/todo_tasks/presentation/create_todo_task_screen.dart';
+import '../../features/todo_tasks/presentation/todo_task_detail_screen.dart';
+import '../../features/booking/presentation/booking_flow_screen.dart';
 import '../services/storage_service.dart';
 
 class AppRouter {
@@ -108,6 +112,29 @@ class AppRouter {
           final code = state.pathParameters['code'] ?? '';
           return PatientDetailScreen(patientCode: code);
         },
+      ),
+
+      // To-Do Tasks
+      GoRoute(
+        path: '/todo-tasks',
+        builder: (context, state) => const TodoTasksScreen(),
+      ),
+      GoRoute(
+        path: '/todo-tasks/create',
+        builder: (context, state) => const CreateTodoTaskScreen(),
+      ),
+      GoRoute(
+        path: '/todo-tasks/detail/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id'] ?? '0');
+          return TodoTaskDetailScreen(taskId: id);
+        },
+      ),
+
+      // Booking
+      GoRoute(
+        path: '/booking',
+        builder: (context, state) => const BookingFlowScreen(),
       ),
     ],
   );

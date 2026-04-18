@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/user_model.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -156,6 +157,18 @@ class AdminDashboardScreen extends StatelessWidget {
                         label: isArabic ? 'المالية' : 'Finance',
                         color: const Color(0xFF0EA5E9),
                         onTap: () {},
+                      ),
+                      QuickActionTile(
+                        icon: FontAwesomeIcons.listCheck,
+                        label: isArabic ? 'المهام' : 'Tasks',
+                        color: const Color(0xFF8B5CF6),
+                        onTap: () => context.push('/todo-tasks'),
+                      ),
+                      QuickActionTile(
+                        icon: FontAwesomeIcons.calendarPlus,
+                        label: isArabic ? 'حجز موعد' : 'Book Appt',
+                        color: AppColors.success,
+                        onTap: () => context.push('/booking'),
                       ),
                     ],
                   ),
