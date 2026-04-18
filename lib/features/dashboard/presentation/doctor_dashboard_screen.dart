@@ -116,11 +116,11 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                         onTap: () => context.push('/patients'),
                       ),
                       QuickActionTile(
-                        icon: FontAwesomeIcons.prescription,
-                        label: isArabic ? 'كتابة وصفة' : 'Prescription',
+                        icon: FontAwesomeIcons.calendarPlus,
+                        label: isArabic ? 'حجز موعد' : 'Book Appointment',
                         color: const Color(0xFF8B5CF6),
                         bgColor: const Color(0xFFF3EEFF),
-                        onTap: () {},
+                        onTap: () => context.push('/booking'),
                       ),
                       QuickActionTile(
                         icon: FontAwesomeIcons.flask,
@@ -128,6 +128,12 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                         color: AppColors.accentBlue,
                         bgColor: AppColors.softBlue,
                         onTap: () {},
+                      ),
+                      QuickActionTile(
+                        icon: FontAwesomeIcons.listCheck,
+                        label: isArabic ? 'المهام' : 'Tasks',
+                        color: const Color(0xFF8B5CF6),
+                        onTap: () => context.push('/todo-tasks'),
                       ),
                     ],
                   ),
