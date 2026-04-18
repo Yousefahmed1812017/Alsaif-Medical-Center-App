@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_radius.dart';
 import '../theme/app_spacing.dart';
 
 enum AppButtonType { primary, secondary, text }
@@ -28,7 +29,9 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    VoidCallback? effectiveOnPressed = (isDisabled || isLoading) ? null : onPressed;
+    VoidCallback? effectiveOnPressed = (isDisabled || isLoading)
+        ? null
+        : onPressed;
 
     Widget buttonContent = Row(
       mainAxisSize: isFullWidth ? MainAxisSize.max : MainAxisSize.min,
@@ -40,7 +43,7 @@ class AppButton extends StatelessWidget {
             height: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2.5,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white), // Simplified color, should match theme based on type
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             ),
           ),
           const SizedBox(width: AppSpacing.s12),
@@ -52,30 +55,63 @@ class AppButton extends StatelessWidget {
       ],
     );
 
-    // Provide specific styling if needed or rely on ThemeData. We'll rely mostly on ThemeData and tweak slightly for loading.
     switch (type) {
       case AppButtonType.primary:
         return ElevatedButton(
           onPressed: effectiveOnPressed,
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            backgroundColor: AppColors.primaryGreen,
+            foregroundColor: AppColors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.r16),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.s24,
+              vertical: AppSpacing.s16,
+            ),
+            minimumSize: isFullWidth ? const Size(double.infinity, 52) : null,
+          ),
           child: buttonContent,
         );
       case AppButtonType.secondary:
         return OutlinedButton(
           onPressed: effectiveOnPressed,
-          // If loading, change indicator color locally
-          child: _overrideLoadingColor(buttonContent, AppColors.primary500),
+          style: OutlinedButton.styleFrom(
+            elevation: 0,
+            foregroundColor: AppColors.accentBlue,
+            side: const BorderSide(color: AppColors.accentBlue, width: 1.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.r16),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.s24,
+              vertical: AppSpacing.s16,
+            ),
+            minimumSize: isFullWidth ? const Size(double.infinity, 52) : null,
+          ),
+          child: _overrideLoadingColor(buttonContent, AppColors.accentBlue),
         );
       case AppButtonType.text:
         return TextButton(
           onPressed: effectiveOnPressed,
-          child: _overrideLoadingColor(buttonContent, AppColors.primary500),
+          style: TextButton.styleFrom(
+            foregroundColor: AppColors.accentBlue,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.r16),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.s16,
+              vertical: AppSpacing.s8,
+            ),
+          ),
+          child: _overrideLoadingColor(buttonContent, AppColors.accentBlue),
         );
     }
   }
 
   Widget _overrideLoadingColor(Widget content, Color color) {
     if (!isLoading) return content;
-    // Replace the CircularProgressIndicator color deep inside
     return Theme(
       data: ThemeData(
         progressIndicatorTheme: ProgressIndicatorThemeData(color: color),

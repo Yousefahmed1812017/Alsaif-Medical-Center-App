@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 
-/// A section title row with an optional "See All" action.
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
     super.key,
@@ -26,19 +25,29 @@ class SectionHeader extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.headingText,
-                ),
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
           ),
           if (actionLabel != null)
             GestureDetector(
               onTap: onAction,
-              child: Text(
-                actionLabel!,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.primary500,
-                      fontWeight: FontWeight.w600,
-                    ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.s12,
+                  vertical: AppSpacing.s4,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.softBlue,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  actionLabel!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.accentBlue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
         ],

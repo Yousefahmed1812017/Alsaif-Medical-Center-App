@@ -6,17 +6,25 @@ import '../../../../core/models/user_model.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/app_bottom_nav.dart';
+import '../../../../core/widgets/app_fab.dart';
 import 'widgets/activity_tile.dart';
 import 'widgets/dashboard_header.dart';
 import 'widgets/quick_action_grid.dart';
 import 'widgets/section_header.dart';
 import 'widgets/stat_card.dart';
 
-/// Dashboard for Doctor users — shows schedule, patients, and clinic info.
-class DoctorDashboardScreen extends StatelessWidget {
+class DoctorDashboardScreen extends StatefulWidget {
   const DoctorDashboardScreen({super.key, required this.user});
 
   final UserModel user;
+
+  @override
+  State<DoctorDashboardScreen> createState() => _DoctorDashboardScreenState();
+}
+
+class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -24,29 +32,32 @@ class DoctorDashboardScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      floatingActionButton: AppFab(onPressed: () {}),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Column(
         children: [
-          // ─── Header ──────────────────────────────────────────────
-          DashboardHeader(user: user, isArabic: isArabic),
+          DashboardHeader(user: widget.user, isArabic: isArabic),
 
-          // ─── Scrollable Content ──────────────────────────────────
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.s20),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.s20,
+                AppSpacing.s24,
+                AppSpacing.s20,
+                AppSpacing.s100,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── Clinic / Specialty Banner ─────────────────────
-                  if (user.clinicNameEnglish != null || user.specialtyNameEnglish != null)
-                    _ClinicBanner(user: user, isArabic: isArabic),
+                  if (widget.user.clinicNameEnglish != null ||
+                      widget.user.specialtyNameEnglish != null)
+                    _ClinicBanner(user: widget.user, isArabic: isArabic),
 
-                  if (user.clinicNameEnglish != null || user.specialtyNameEnglish != null)
+                  if (widget.user.clinicNameEnglish != null ||
+                      widget.user.specialtyNameEnglish != null)
                     const SizedBox(height: AppSpacing.s24),
 
-                  // ── Stats Row ────────────────────────────────────
-                  SectionHeader(
-                    title: isArabic ? 'نظرة عامة' : 'Overview',
-                  ),
+                  SectionHeader(title: isArabic ? 'نظرة عامة' : 'Overview'),
                   const SizedBox(height: AppSpacing.s12),
                   Row(
                     children: [
@@ -55,8 +66,8 @@ class DoctorDashboardScreen extends StatelessWidget {
                           icon: FontAwesomeIcons.calendarDay,
                           value: '12',
                           label: isArabic ? 'مواعيد اليوم' : "Today's Appts",
-                          iconColor: AppColors.primary500,
-                          iconBgColor: AppColors.primary50,
+                          iconColor: AppColors.accentBlue,
+                          iconBgColor: AppColors.softBlue,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.s12),
@@ -65,8 +76,8 @@ class DoctorDashboardScreen extends StatelessWidget {
                           icon: FontAwesomeIcons.userInjured,
                           value: '480',
                           label: isArabic ? 'إجمالي المرضى' : 'Total Patients',
-                          iconColor: AppColors.success,
-                          iconBgColor: AppColors.successSoft,
+                          iconColor: AppColors.primaryGreen,
+                          iconBgColor: AppColors.softGreen,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.s12),
@@ -84,7 +95,6 @@ class DoctorDashboardScreen extends StatelessWidget {
 
                   const SizedBox(height: AppSpacing.s32),
 
-                  // ── Quick Actions ─────────────────────────────────
                   SectionHeader(
                     title: isArabic ? 'إجراءات سريعة' : 'Quick Actions',
                   ),
@@ -94,25 +104,29 @@ class DoctorDashboardScreen extends StatelessWidget {
                       QuickActionTile(
                         icon: FontAwesomeIcons.calendarXmark,
                         label: isArabic ? 'إغلاق موعد' : 'Close Time',
-                        color: AppColors.primary500,
+                        color: AppColors.accentBlue,
+                        bgColor: AppColors.softBlue,
                         onTap: () => context.push('/close-time'),
                       ),
                       QuickActionTile(
                         icon: FontAwesomeIcons.fileMedical,
                         label: isArabic ? 'سجلات المرضى' : 'Patient Records',
-                        color: AppColors.success,
+                        color: AppColors.primaryGreen,
+                        bgColor: AppColors.softGreen,
                         onTap: () => context.push('/patients'),
                       ),
                       QuickActionTile(
                         icon: FontAwesomeIcons.calendarPlus,
                         label: isArabic ? 'حجز موعد' : 'Book Appointment',
                         color: const Color(0xFF8B5CF6),
+                        bgColor: const Color(0xFFF3EEFF),
                         onTap: () => context.push('/booking'),
                       ),
                       QuickActionTile(
                         icon: FontAwesomeIcons.flask,
                         label: isArabic ? 'نتائج المختبر' : 'Lab Results',
-                        color: AppColors.info,
+                        color: AppColors.accentBlue,
+                        bgColor: AppColors.softBlue,
                         onTap: () {},
                       ),
                       QuickActionTile(
@@ -126,7 +140,6 @@ class DoctorDashboardScreen extends StatelessWidget {
 
                   const SizedBox(height: AppSpacing.s32),
 
-                  // ── Today's Schedule ──────────────────────────────
                   SectionHeader(
                     title: isArabic ? 'مواعيد اليوم' : "Today's Schedule",
                     actionLabel: isArabic ? 'عرض الكل' : 'See All',
@@ -138,7 +151,7 @@ class DoctorDashboardScreen extends StatelessWidget {
                     patientName: isArabic ? 'أحمد محمد' : 'Ahmed Mohamed',
                     time: '09:00 - 09:30',
                     type: isArabic ? 'كشف أول' : 'First Visit',
-                    statusColor: AppColors.success,
+                    statusColor: AppColors.primaryGreen,
                     statusText: isArabic ? 'مؤكد' : 'Confirmed',
                   ),
                   const SizedBox(height: AppSpacing.s8),
@@ -146,12 +159,14 @@ class DoctorDashboardScreen extends StatelessWidget {
                     patientName: isArabic ? 'سارة العلي' : 'Sara Al-Ali',
                     time: '09:30 - 10:00',
                     type: isArabic ? 'متابعة' : 'Follow-up',
-                    statusColor: AppColors.primary500,
+                    statusColor: AppColors.accentBlue,
                     statusText: isArabic ? 'قادم' : 'Upcoming',
                   ),
                   const SizedBox(height: AppSpacing.s8),
                   _ScheduleCard(
-                    patientName: isArabic ? 'خالد الرشيدي' : 'Khalid Al-Rashidi',
+                    patientName: isArabic
+                        ? 'خالد الرشيدي'
+                        : 'Khalid Al-Rashidi',
                     time: '10:00 - 10:30',
                     type: isArabic ? 'استشارة' : 'Consultation',
                     statusColor: AppColors.warning,
@@ -160,7 +175,6 @@ class DoctorDashboardScreen extends StatelessWidget {
 
                   const SizedBox(height: AppSpacing.s32),
 
-                  // ── Recent Activity ───────────────────────────────
                   SectionHeader(
                     title: isArabic ? 'النشاط الأخير' : 'Recent Activity',
                     actionLabel: isArabic ? 'عرض الكل' : 'See All',
@@ -174,8 +188,8 @@ class DoctorDashboardScreen extends StatelessWidget {
                         ? 'تقرير المريض فيصل - جلدية'
                         : 'Patient Faisal report - Dermatology',
                     time: isArabic ? 'منذ 10 دقائق' : '10 min ago',
-                    iconColor: AppColors.success,
-                    iconBgColor: AppColors.successSoft,
+                    iconColor: AppColors.primaryGreen,
+                    iconBgColor: AppColors.softGreen,
                   ),
                   const SizedBox(height: AppSpacing.s8),
                   ActivityTile(
@@ -196,11 +210,15 @@ class DoctorDashboardScreen extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: AppBottomNav(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+        },
+      ),
     );
   }
 }
-
-// ─── Doctor-specific widgets ──────────────────────────────────────────────
 
 class _ClinicBanner extends StatelessWidget {
   const _ClinicBanner({required this.user, required this.isArabic});
@@ -221,28 +239,24 @@ class _ClinicBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.s16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary500.withAlpha(15),
-            AppColors.primary500.withAlpha(8),
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.circular(AppRadius.r16),
-        border: Border.all(color: AppColors.primary200.withAlpha(80)),
+        color: AppColors.softGreen,
+        borderRadius: BorderRadius.circular(AppRadius.r20),
       ),
       child: Row(
         children: [
           Container(
-            width: 46,
-            height: 46,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
-              color: AppColors.primary100,
+              color: AppColors.primaryGreen.withAlpha(20),
               borderRadius: BorderRadius.circular(AppRadius.r12),
             ),
             child: const Center(
-              child: FaIcon(FontAwesomeIcons.hospital, size: 20, color: AppColors.primary500),
+              child: FaIcon(
+                FontAwesomeIcons.hospital,
+                size: 18,
+                color: AppColors.primaryGreen,
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.s12),
@@ -254,17 +268,17 @@ class _ClinicBanner extends StatelessWidget {
                   Text(
                     clinicName,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary500,
-                        ),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.greenDark,
+                    ),
                   ),
                 if (specialtyName.isNotEmpty) ...[
                   const SizedBox(height: 2),
                   Text(
                     specialtyName,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.mutedText,
-                        ),
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ],
@@ -273,17 +287,17 @@ class _ClinicBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.successSoft,
+              color: AppColors.primaryGreen,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 7,
-                  height: 7,
+                  width: 6,
+                  height: 6,
                   decoration: const BoxDecoration(
-                    color: AppColors.success,
+                    color: AppColors.white,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -291,10 +305,10 @@ class _ClinicBanner extends StatelessWidget {
                 Text(
                   isArabic ? 'متصل' : 'Online',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.success,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 11,
-                      ),
+                    color: AppColors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11,
+                  ),
                 ),
               ],
             ),
@@ -326,42 +340,45 @@ class _ScheduleCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.s16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.r12),
-        border: Border.all(color: AppColors.border.withAlpha(100)),
+        borderRadius: BorderRadius.circular(AppRadius.r20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(4),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          // Time column
           Container(
-            width: 54,
+            width: 52,
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.primary500.withAlpha(12),
-              borderRadius: BorderRadius.circular(AppRadius.r8),
+              color: AppColors.softGreen,
+              borderRadius: BorderRadius.circular(AppRadius.r12),
             ),
             child: Column(
               children: [
                 Text(
                   time.split(' - ').first,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary500,
-                        fontSize: 12,
-                      ),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.greenDark,
+                    fontSize: 12,
+                  ),
                 ),
                 Text(
                   time.split(' - ').last,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.mutedText,
-                        fontSize: 10,
-                      ),
+                    color: AppColors.textSecondary,
+                    fontSize: 10,
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(width: AppSpacing.s12),
-
-          // Patient info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -369,35 +386,33 @@ class _ScheduleCard extends StatelessWidget {
                 Text(
                   patientName,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.headingText,
-                      ),
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   type,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.mutedText,
-                      ),
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
           ),
-
-          // Status badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: statusColor.withAlpha(25),
+              color: statusColor.withAlpha(20),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               statusText,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: statusColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 11,
-                  ),
+                color: statusColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+              ),
             ),
           ),
         ],

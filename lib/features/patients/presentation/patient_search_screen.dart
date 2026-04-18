@@ -116,16 +116,17 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
-      appBar: AppAppBar(
-        title: isArabic ? 'البحث عن مريض' : 'Patient Search',
-      ),
+      appBar: AppAppBar(title: isArabic ? 'البحث عن مريض' : 'Patient Search'),
       body: Column(
         children: [
           // ── Search Section ──────────────────────────────────────
           Container(
             color: AppColors.surface,
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.s20, AppSpacing.s16, AppSpacing.s20, AppSpacing.s20,
+              AppSpacing.s20,
+              AppSpacing.s16,
+              AppSpacing.s20,
+              AppSpacing.s20,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -208,12 +209,12 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _error != null
-                    ? _buildError(isArabic)
-                    : !_hasSearched
-                        ? _buildPrompt(isArabic)
-                        : _results.isEmpty
-                            ? _buildNoResults(isArabic)
-                            : _buildResults(isArabic),
+                ? _buildError(isArabic)
+                : !_hasSearched
+                ? _buildPrompt(isArabic)
+                : _results.isEmpty
+                ? _buildNoResults(isArabic)
+                : _buildResults(isArabic),
           ),
         ],
       ),
@@ -272,20 +273,24 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.primary500.withAlpha(12),
+                color: AppColors.primaryGreen.withAlpha(12),
                 shape: BoxShape.circle,
               ),
               child: const Center(
-                child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: 32, color: AppColors.primary500),
+                child: FaIcon(
+                  FontAwesomeIcons.magnifyingGlass,
+                  size: 32,
+                  color: AppColors.primary500,
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.s24),
             Text(
               isArabic ? 'ابحث عن مريض' : 'Search for a Patient',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.headingText,
-                    fontWeight: FontWeight.w700,
-                  ),
+                color: AppColors.headingText,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: AppSpacing.s8),
             Text(
@@ -293,9 +298,9 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
                   ? 'استخدم رقم الملف أو رقم الهوية للبحث السريع'
                   : 'Use MR# or Identity No for quick lookup',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.mutedText,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.mutedText),
             ),
           ],
         ),
@@ -310,12 +315,18 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(FontAwesomeIcons.circleExclamation, size: 48, color: AppColors.error),
+            FaIcon(
+              FontAwesomeIcons.circleExclamation,
+              size: 48,
+              color: AppColors.error,
+            ),
             const SizedBox(height: AppSpacing.s16),
             Text(
               _error!,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.error),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: AppColors.error),
             ),
             const SizedBox(height: AppSpacing.s16),
             OutlinedButton.icon(
@@ -334,16 +345,26 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FaIcon(FontAwesomeIcons.userSlash, size: 48, color: AppColors.mutedText.withAlpha(120)),
+          FaIcon(
+            FontAwesomeIcons.userSlash,
+            size: 48,
+            color: AppColors.mutedText.withAlpha(120),
+          ),
           const SizedBox(height: AppSpacing.s16),
           Text(
             isArabic ? 'لا توجد نتائج' : 'No Results Found',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.mutedText),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: AppColors.mutedText),
           ),
           const SizedBox(height: AppSpacing.s8),
           Text(
-            isArabic ? 'جرّب البحث بمعيار آخر' : 'Try searching with a different criteria',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.mutedText),
+            isArabic
+                ? 'جرّب البحث بمعيار آخر'
+                : 'Try searching with a different criteria',
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.mutedText),
           ),
         ],
       ),
@@ -356,25 +377,32 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.s20, AppSpacing.s16, AppSpacing.s20, AppSpacing.s8,
+            AppSpacing.s20,
+            AppSpacing.s16,
+            AppSpacing.s20,
+            AppSpacing.s8,
           ),
           child: Text(
             isArabic
                 ? '${_results.length} نتيجة'
                 : '${_results.length} result${_results.length == 1 ? '' : 's'}',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.mutedText,
-                  fontWeight: FontWeight.w600,
-                ),
+              color: AppColors.mutedText,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         Expanded(
           child: ListView.separated(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.s20, 0, AppSpacing.s20, AppSpacing.s20,
+              AppSpacing.s20,
+              0,
+              AppSpacing.s20,
+              AppSpacing.s20,
             ),
             itemCount: _results.length,
-            separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.s12),
+            separatorBuilder: (context, index) =>
+                const SizedBox(height: AppSpacing.s12),
             itemBuilder: (context, index) {
               final patient = _results[index];
               return _PatientCard(
@@ -435,7 +463,10 @@ class _FilterChips extends StatelessWidget {
             GestureDetector(
               onTap: onToggleAdvanced,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: showAdvanced
                       ? AppColors.primary500.withAlpha(15)
@@ -446,7 +477,9 @@ class _FilterChips extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     FaIcon(
-                      showAdvanced ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.sliders,
+                      showAdvanced
+                          ? FontAwesomeIcons.chevronUp
+                          : FontAwesomeIcons.sliders,
                       size: 12,
                       color: AppColors.primary500,
                     ),
@@ -454,9 +487,9 @@ class _FilterChips extends StatelessWidget {
                     Text(
                       isArabic ? 'المزيد' : 'More',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.primary500,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        color: AppColors.primary500,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -537,9 +570,9 @@ class _Chip extends StatelessWidget {
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: isSelected ? AppColors.white : AppColors.bodyText,
-                    fontWeight: FontWeight.w600,
-                  ),
+                color: isSelected ? AppColors.white : AppColors.bodyText,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),
@@ -569,8 +602,7 @@ class _PatientCard extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.s16),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.r16),
-          border: Border.all(color: AppColors.border),
+          borderRadius: BorderRadius.circular(AppRadius.r20),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(6),
@@ -586,16 +618,16 @@ class _PatientCard extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.primary500.withAlpha(15),
+                color: AppColors.softGreen,
                 borderRadius: BorderRadius.circular(AppRadius.r12),
               ),
               child: Center(
                 child: Text(
                   _initials(patient.displayName),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.primary500,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    color: AppColors.primary500,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
@@ -609,9 +641,9 @@ class _PatientCard extends StatelessWidget {
                   Text(
                     patient.displayName,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.headingText,
-                        ),
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.headingText,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -644,7 +676,11 @@ class _PatientCard extends StatelessWidget {
             ),
 
             // Chevron
-            const FaIcon(FontAwesomeIcons.chevronRight, size: 14, color: AppColors.mutedText),
+            const FaIcon(
+              FontAwesomeIcons.chevronRight,
+              size: 14,
+              color: AppColors.mutedText,
+            ),
           ],
         ),
       ),
@@ -675,9 +711,9 @@ class _InfoBadge extends StatelessWidget {
         Text(
           text,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.mutedText,
-                fontSize: 11,
-              ),
+            color: AppColors.mutedText,
+            fontSize: 11,
+          ),
         ),
       ],
     );

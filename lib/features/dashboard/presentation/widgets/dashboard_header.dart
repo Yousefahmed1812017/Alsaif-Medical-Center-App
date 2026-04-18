@@ -3,10 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/user_model.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 
-/// Premium welcome header with gradient background, avatar, and greeting.
 class DashboardHeader extends StatelessWidget {
   const DashboardHeader({
     super.key,
@@ -20,13 +19,13 @@ class DashboardHeader extends StatelessWidget {
   String _getGreeting() {
     final hour = DateTime.now().hour;
     if (isArabic) {
-      if (hour < 12) return 'صباح الخير ☀️';
-      if (hour < 17) return 'مساء الخير 🌤️';
-      return 'مساء الخير 🌙';
+      if (hour < 12) return 'صباح الخير';
+      if (hour < 17) return 'مساء الخير';
+      return 'مساء الخير';
     } else {
-      if (hour < 12) return 'Good Morning ☀️';
-      if (hour < 17) return 'Good Afternoon 🌤️';
-      return 'Good Evening 🌙';
+      if (hour < 12) return 'Good Morning';
+      if (hour < 17) return 'Good Afternoon';
+      return 'Good Evening';
     }
   }
 
@@ -47,14 +46,14 @@ class DashboardHeader extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.primary700,
-            AppColors.primary400,
-          ],
+          colors: [Color(0xFF16A34A), Color(0xFF22C55E)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(AppRadius.r24),
         ),
       ),
       child: SafeArea(
@@ -64,16 +63,15 @@ class DashboardHeader extends StatelessWidget {
             AppSpacing.s24,
             AppSpacing.s16,
             AppSpacing.s24,
-            AppSpacing.s24,
+            AppSpacing.s32,
           ),
           child: Row(
             children: [
-              // Avatar
               GestureDetector(
                 onTap: () => context.push('/profile'),
                 child: Container(
-                  width: 56,
-                  height: 56,
+                  width: 52,
+                  height: 52,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white.withAlpha(40),
@@ -85,15 +83,13 @@ class DashboardHeader extends StatelessWidget {
                   child: Center(
                     child: FaIcon(
                       _getRoleIcon(),
-                      size: 22,
+                      size: 20,
                       color: Colors.white,
                     ),
                   ),
                 ),
               ),
               const SizedBox(width: AppSpacing.s16),
-
-              // Greeting + Name
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,25 +97,23 @@ class DashboardHeader extends StatelessWidget {
                     Text(
                       _getGreeting(),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white.withAlpha(200),
-                            fontWeight: FontWeight.w400,
-                          ),
+                        color: Colors.white.withAlpha(200),
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       displayName,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-
-              // Notification bell
               Container(
                 width: 44,
                 height: 44,
@@ -128,12 +122,10 @@ class DashboardHeader extends StatelessWidget {
                   color: Colors.white.withAlpha(25),
                 ),
                 child: IconButton(
-                  onPressed: () {
-                    // TODO: Notifications
-                  },
+                  onPressed: () {},
                   icon: const FaIcon(
                     FontAwesomeIcons.bell,
-                    size: 20,
+                    size: 18,
                     color: Colors.white,
                   ),
                 ),

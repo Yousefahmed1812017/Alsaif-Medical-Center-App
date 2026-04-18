@@ -5,7 +5,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 
-/// An activity/notification tile similar to the reference design.
 class ActivityTile extends StatelessWidget {
   const ActivityTile({
     super.key,
@@ -34,30 +33,33 @@ class ActivityTile extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.s16),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.r12),
-          border: Border.all(color: AppColors.border.withAlpha(100)),
+          borderRadius: BorderRadius.circular(AppRadius.r20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(4),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Row(
           children: [
-            // Icon
             Container(
-              width: 46,
-              height: 46,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
-                color: iconBgColor ?? AppColors.primary50,
+                color: iconBgColor ?? AppColors.softGreen,
                 borderRadius: BorderRadius.circular(AppRadius.r12),
               ),
               child: Center(
                 child: FaIcon(
                   icon,
-                  size: 18,
-                  color: iconColor ?? AppColors.primary500,
+                  size: 16,
+                  color: iconColor ?? AppColors.primaryGreen,
                 ),
               ),
             ),
             const SizedBox(width: AppSpacing.s12),
-
-            // Content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,9 +67,9 @@ class ActivityTile extends StatelessWidget {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.headingText,
-                        ),
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -75,8 +77,8 @@ class ActivityTile extends StatelessWidget {
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.mutedText,
-                        ),
+                      color: AppColors.textSecondary,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -84,14 +86,12 @@ class ActivityTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.s8),
-
-            // Time
             Text(
               time,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.mutedText,
-                    fontSize: 11,
-                  ),
+                color: AppColors.textSecondary,
+                fontSize: 11,
+              ),
             ),
           ],
         ),
