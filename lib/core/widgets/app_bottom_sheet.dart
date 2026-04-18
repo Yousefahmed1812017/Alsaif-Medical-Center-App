@@ -5,14 +5,10 @@ import '../theme/app_radius.dart';
 import '../theme/app_spacing.dart';
 
 class AppBottomSheet extends StatelessWidget {
-  const AppBottomSheet({
-    super.key,
-    required this.child,
-  });
+  const AppBottomSheet({super.key, required this.child});
 
   final Widget child;
 
-  /// Helper method to display a custom bottom sheet with the standard styling
   static Future<T?> show<T>({
     required BuildContext context,
     required Widget child,
@@ -21,6 +17,7 @@ class AppBottomSheet extends StatelessWidget {
     return showModalBottomSheet<T>(
       context: context,
       isScrollControlled: isScrollControlled,
+      backgroundColor: Colors.transparent,
       builder: (context) => AppBottomSheet(child: child),
     );
   }
@@ -31,7 +28,7 @@ class AppBottomSheet extends StatelessWidget {
       decoration: const BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppRadius.r20),
+          top: Radius.circular(AppRadius.r24),
         ),
       ),
       padding: EdgeInsets.only(
@@ -43,13 +40,12 @@ class AppBottomSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Custom Handle
               Container(
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
                   color: AppColors.border,
-                  borderRadius: BorderRadius.circular(AppRadius.r8),
+                  borderRadius: BorderRadius.circular(AppRadius.rFull),
                 ),
               ),
               const SizedBox(height: AppSpacing.s24),

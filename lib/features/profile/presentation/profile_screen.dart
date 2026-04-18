@@ -26,10 +26,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.r16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.r24),
+        ),
         title: Row(
           children: [
-            FaIcon(FontAwesomeIcons.rightFromBracket, size: 20, color: AppColors.error),
+            FaIcon(
+              FontAwesomeIcons.rightFromBracket,
+              size: 20,
+              color: AppColors.error,
+            ),
             const SizedBox(width: AppSpacing.s12),
             Text(isArabic ? 'تسجيل الخروج' : 'Logout'),
           ],
@@ -48,6 +54,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.error,
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.r16),
+              ),
             ),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(isArabic ? 'خروج' : 'Logout'),
@@ -62,7 +71,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await AuthService.logout();
 
     if (!mounted) return;
-    // Navigate to user-type selection and clear navigation stack
     context.go('/user-type');
   }
 
@@ -72,29 +80,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = AuthService.currentUser;
 
     return Scaffold(
-      appBar: AppAppBar(
-        title: isArabic ? 'الملف الشخصي' : 'Profile',
-      ),
+      appBar: AppAppBar(title: isArabic ? 'الملف الشخصي' : 'Profile'),
       body: user == null
           ? Center(
               child: Text(
                 isArabic ? 'لا توجد بيانات مستخدم' : 'No user data available',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.mutedText,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
               ),
             )
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  // ─── Profile Header ────────────────────────────────
                   _ProfileHeader(user: user, isArabic: isArabic),
 
-                  const SizedBox(height: AppSpacing.s8),
+                  const SizedBox(height: AppSpacing.s16),
 
-                  // ─── Info Sections ─────────────────────────────────
                   _SectionCard(
-                    title: isArabic ? 'المعلومات الشخصية' : 'Personal Information',
+                    title: isArabic
+                        ? 'المعلومات الشخصية'
+                        : 'Personal Information',
                     icon: FontAwesomeIcons.user,
                     children: [
                       _InfoRow(
@@ -105,10 +111,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       if (user.nameEnglish != null)
                         _InfoRow(
                           icon: FontAwesomeIcons.signature,
-                          label: isArabic ? 'الاسم (إنجليزي)' : 'Name (English)',
+                          label: isArabic
+                              ? 'الاسم (إنجليزي)'
+                              : 'Name (English)',
                           value: user.nameEnglish!,
                         ),
-                      if (user.nameArabic != null && user.nameArabic!.isNotEmpty)
+                      if (user.nameArabic != null &&
+                          user.nameArabic!.isNotEmpty)
                         _InfoRow(
                           icon: FontAwesomeIcons.signature,
                           label: isArabic ? 'الاسم (عربي)' : 'Name (Arabic)',
@@ -152,26 +161,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           label: isArabic ? 'الدور' : 'Role',
                           value: user.roleName!,
                         ),
-                      if (user.clinicNameEnglish != null || user.clinicNameArabic != null)
+                      if (user.clinicNameEnglish != null ||
+                          user.clinicNameArabic != null)
                         _InfoRow(
                           icon: FontAwesomeIcons.hospital,
                           label: isArabic ? 'العيادة' : 'Clinic',
                           value: isArabic
-                              ? (user.clinicNameArabic ?? user.clinicNameEnglish!)
+                              ? (user.clinicNameArabic ??
+                                    user.clinicNameEnglish!)
                               : user.clinicNameEnglish!,
                         ),
-                      if (user.specialtyNameEnglish != null || user.specialtyNameArabic != null)
+                      if (user.specialtyNameEnglish != null ||
+                          user.specialtyNameArabic != null)
                         _InfoRow(
                           icon: FontAwesomeIcons.stethoscope,
                           label: isArabic ? 'التخصص' : 'Specialty',
                           value: isArabic
-                              ? (user.specialtyNameArabic ?? user.specialtyNameEnglish!)
+                              ? (user.specialtyNameArabic ??
+                                    user.specialtyNameEnglish!)
                               : user.specialtyNameEnglish!,
                         ),
                     ],
                   ),
 
-                  // ─── Logout Button ─────────────────────────────────
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.s24,
@@ -198,18 +210,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       case 'ADMIN':
         return AppColors.error;
       case 'DOCTOR':
-        return AppColors.success;
+        return AppColors.primaryGreen;
       case 'EMPLOYEE':
-        return AppColors.info;
+        return AppColors.accentBlue;
       default:
-        return AppColors.primary500;
+        return AppColors.primaryGreen;
     }
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Sub-widgets
-// ─────────────────────────────────────────────────────────────────────────────
 
 class _ProfileHeader extends StatelessWidget {
   const _ProfileHeader({required this.user, required this.isArabic});
@@ -221,7 +229,6 @@ class _ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final displayName = user.displayName(preferArabic: isArabic);
 
-    // Pick an icon based on user type
     dynamic avatarIcon;
     switch (user.userType.toUpperCase()) {
       case 'DOCTOR':
@@ -240,36 +247,29 @@ class _ProfileHeader extends StatelessWidget {
         horizontal: AppSpacing.s24,
         vertical: AppSpacing.s32,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.primary500.withAlpha(35),
-            AppColors.primary500.withAlpha(8),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          colors: [Color(0xFF16A34A), Color(0xFF22C55E)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(AppRadius.r24),
         ),
       ),
       child: Column(
         children: [
-          // Avatar
           Container(
             width: 88,
             height: 88,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary400,
-                  AppColors.primary600,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              color: Colors.white.withAlpha(30),
+              border: Border.all(color: Colors.white.withAlpha(60), width: 3),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary500.withAlpha(60),
-                  blurRadius: 20,
+                  color: Colors.black.withAlpha(20),
+                  blurRadius: 16,
                   offset: const Offset(0, 8),
                 ),
               ],
@@ -279,32 +279,27 @@ class _ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.s16),
-
-          // Name
           Text(
             displayName,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.headingText,
-                ),
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.s8),
-
-          // Role badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.primary500.withAlpha(25),
+              color: Colors.white.withAlpha(25),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.primary300.withAlpha(80)),
             ),
             child: Text(
               user.roleName ?? user.userType,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: AppColors.primary600,
-                    fontWeight: FontWeight.w600,
-                  ),
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -330,25 +325,23 @@ class _SectionCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.s16,
+        horizontal: AppSpacing.s20,
         vertical: AppSpacing.s8,
       ),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.r16),
-        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppRadius.r20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(8),
+            color: Colors.black.withAlpha(4),
             blurRadius: 12,
-            offset: const Offset(0, 2),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section header
           Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.s20,
@@ -358,22 +351,22 @@ class _SectionCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                FaIcon(icon, size: 16, color: AppColors.primary500),
+                FaIcon(icon, size: 16, color: AppColors.primaryGreen),
                 const SizedBox(width: AppSpacing.s8),
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary600,
-                        letterSpacing: 0.3,
-                      ),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ],
             ),
           ),
-          const Divider(height: 1, indent: 20, endIndent: 20),
-
-          // Items
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.s20),
+            child: Divider(height: 1),
+          ),
           ...children,
         ],
       ),
@@ -408,11 +401,11 @@ class _InfoRow extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.surfaceAlt,
+              color: AppColors.softGreen,
               borderRadius: BorderRadius.circular(AppRadius.r8),
             ),
             child: Center(
-              child: FaIcon(icon, size: 15, color: AppColors.mutedText),
+              child: FaIcon(icon, size: 14, color: AppColors.primaryGreen),
             ),
           ),
           const SizedBox(width: AppSpacing.s12),
@@ -423,17 +416,17 @@ class _InfoRow extends StatelessWidget {
                 Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.mutedText,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: valueColor ?? AppColors.headingText,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: valueColor ?? AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),

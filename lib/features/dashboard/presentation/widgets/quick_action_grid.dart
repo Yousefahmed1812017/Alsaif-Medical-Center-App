@@ -5,7 +5,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 
-/// A single quick action tile with icon, label, and tap handler.
 class QuickActionTile extends StatelessWidget {
   const QuickActionTile({
     super.key,
@@ -24,24 +23,22 @@ class QuickActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileColor = color ?? AppColors.primary500;
+    final tileColor = color ?? AppColors.primaryGreen;
     final tileBg = bgColor ?? tileColor.withAlpha(20);
 
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+      child: Container(
         padding: const EdgeInsets.symmetric(
           vertical: AppSpacing.s16,
           horizontal: AppSpacing.s8,
         ),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.r16),
-          border: Border.all(color: AppColors.border.withAlpha(120)),
+          borderRadius: BorderRadius.circular(AppRadius.r20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(6),
+              color: Colors.black.withAlpha(4),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),
@@ -51,23 +48,21 @@ class QuickActionTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 52,
-              height: 52,
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
                 color: tileBg,
                 borderRadius: BorderRadius.circular(AppRadius.r16),
               ),
-              child: Center(
-                child: FaIcon(icon, size: 22, color: tileColor),
-              ),
+              child: Center(child: FaIcon(icon, size: 20, color: tileColor)),
             ),
-            const SizedBox(height: AppSpacing.s12),
+            const SizedBox(height: AppSpacing.s8),
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.headingText,
-                  ),
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -79,7 +74,6 @@ class QuickActionTile extends StatelessWidget {
   }
 }
 
-/// A grid of quick action tiles.
 class QuickActionGrid extends StatelessWidget {
   const QuickActionGrid({
     super.key,
@@ -98,7 +92,7 @@ class QuickActionGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: AppSpacing.s12,
       mainAxisSpacing: AppSpacing.s12,
-      childAspectRatio: 0.85,
+      childAspectRatio: 0.82,
       children: actions,
     );
   }

@@ -5,7 +5,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 
-/// A compact stat card with an icon, value, and label.
 class StatCard extends StatelessWidget {
   const StatCard({
     super.key,
@@ -32,11 +31,10 @@ class StatCard extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.s16),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.r16),
-          border: Border.all(color: AppColors.border.withAlpha(120)),
+          borderRadius: BorderRadius.circular(AppRadius.r20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(8),
+              color: Colors.black.withAlpha(5),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -44,20 +42,19 @@ class StatCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              width: 42,
-              height: 42,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
-                color: iconBgColor ?? AppColors.primary50,
+                color: iconBgColor ?? AppColors.softGreen,
                 borderRadius: BorderRadius.circular(AppRadius.r12),
               ),
               child: Center(
                 child: FaIcon(
                   icon,
-                  size: 18,
-                  color: iconColor ?? AppColors.primary500,
+                  size: 16,
+                  color: iconColor ?? AppColors.primaryGreen,
                 ),
               ),
             ),
@@ -65,17 +62,17 @@ class StatCard extends StatelessWidget {
             Text(
               value,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.headingText,
-                  ),
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
             ),
             const SizedBox(height: 2),
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.mutedText,
-                    fontWeight: FontWeight.w500,
-                  ),
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w500,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

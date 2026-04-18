@@ -38,7 +38,9 @@ class _CloseTimeDetailScreenState extends State<CloseTimeDetailScreen> {
     });
 
     try {
-      final response = await ApiService.getCloseRequestDetails(requestId: widget.requestId);
+      final response = await ApiService.getCloseRequestDetails(
+        requestId: widget.requestId,
+      );
       final data = response['data'] as Map<String, dynamic>;
       _request = CloseTimeRequestModel.fromJson(data);
     } on ApiException catch (e) {
@@ -77,14 +79,12 @@ class _CloseTimeDetailScreenState extends State<CloseTimeDetailScreen> {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
-      appBar: AppAppBar(
-        title: isArabic ? 'تفاصيل الطلب' : 'Request Details',
-      ),
+      appBar: AppAppBar(title: isArabic ? 'تفاصيل الطلب' : 'Request Details'),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? _buildError(isArabic)
-              : _buildContent(context, isArabic),
+          ? _buildError(isArabic)
+          : _buildContent(context, isArabic),
     );
   }
 
@@ -95,7 +95,11 @@ class _CloseTimeDetailScreenState extends State<CloseTimeDetailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(FontAwesomeIcons.circleExclamation, size: 48, color: AppColors.error),
+            FaIcon(
+              FontAwesomeIcons.circleExclamation,
+              size: 48,
+              color: AppColors.error,
+            ),
             const SizedBox(height: AppSpacing.s16),
             Text(_error!, textAlign: TextAlign.center),
             const SizedBox(height: AppSpacing.s16),
@@ -143,8 +147,8 @@ class _CloseTimeDetailScreenState extends State<CloseTimeDetailScreen> {
                       req.requestStatus.toUpperCase() == 'A'
                           ? FontAwesomeIcons.circleCheck
                           : req.requestStatus.toUpperCase() == 'R'
-                              ? FontAwesomeIcons.circleXmark
-                              : FontAwesomeIcons.hourglassHalf,
+                          ? FontAwesomeIcons.circleXmark
+                          : FontAwesomeIcons.hourglassHalf,
                       size: 20,
                       color: sc,
                     ),
@@ -157,17 +161,17 @@ class _CloseTimeDetailScreenState extends State<CloseTimeDetailScreen> {
                     children: [
                       Text(
                         statusLabel,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: sc,
-                              fontWeight: FontWeight.w700,
-                            ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(color: sc, fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        isArabic ? 'رقم الطلب: #${req.requestId}' : 'Request #${req.requestId}',
+                        isArabic
+                            ? 'رقم الطلب: #${req.requestId}'
+                            : 'Request #${req.requestId}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: sc.withAlpha(180),
-                            ),
+                          color: sc.withAlpha(180),
+                        ),
                       ),
                     ],
                   ),
@@ -183,8 +187,7 @@ class _CloseTimeDetailScreenState extends State<CloseTimeDetailScreen> {
             padding: const EdgeInsets.all(AppSpacing.s20),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppRadius.r16),
-              border: Border.all(color: AppColors.border),
+              borderRadius: BorderRadius.circular(AppRadius.r20),
             ),
             child: Column(
               children: [
@@ -251,9 +254,15 @@ class _CloseTimeDetailScreenState extends State<CloseTimeDetailScreen> {
                       // TODO: wire to approve API later
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(isArabic ? 'سيتم الربط لاحقاً' : 'Will be connected later'),
+                          content: Text(
+                            isArabic
+                                ? 'سيتم الربط لاحقاً'
+                                : 'Will be connected later',
+                          ),
                           behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.r12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppRadius.r12),
+                          ),
                         ),
                       );
                     },
@@ -269,9 +278,15 @@ class _CloseTimeDetailScreenState extends State<CloseTimeDetailScreen> {
                       // TODO: wire to reject API later
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(isArabic ? 'سيتم الربط لاحقاً' : 'Will be connected later'),
+                          content: Text(
+                            isArabic
+                                ? 'سيتم الربط لاحقاً'
+                                : 'Will be connected later',
+                          ),
                           behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.r12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppRadius.r12),
+                          ),
                         ),
                       );
                     },
@@ -310,7 +325,7 @@ class _DetailRow extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: AppColors.surfaceAlt,
+            color: AppColors.softGreen,
             borderRadius: BorderRadius.circular(AppRadius.r8),
           ),
           child: Center(
@@ -325,17 +340,17 @@ class _DetailRow extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.mutedText,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  color: AppColors.mutedText,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const SizedBox(height: 2),
               Text(
                 value,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.headingText,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),

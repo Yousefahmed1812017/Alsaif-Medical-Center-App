@@ -15,7 +15,8 @@ class CloseTimeRequestsScreen extends StatefulWidget {
   const CloseTimeRequestsScreen({super.key});
 
   @override
-  State<CloseTimeRequestsScreen> createState() => _CloseTimeRequestsScreenState();
+  State<CloseTimeRequestsScreen> createState() =>
+      _CloseTimeRequestsScreenState();
 }
 
 class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
@@ -96,27 +97,30 @@ class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? _buildError(isArabic)
-              : _requests.isEmpty
-                  ? _buildEmpty(isArabic)
-                  : RefreshIndicator(
-                      onRefresh: _loadRequests,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.all(AppSpacing.s16),
-                        itemCount: _requests.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.s12),
-                        itemBuilder: (context, index) => _RequestCard(
-                          request: _requests[index],
-                          isArabic: isArabic,
-                          statusColor: _statusColor(_requests[index].requestStatus),
-                          statusBgColor: _statusBgColor(_requests[index].requestStatus),
-                          onTap: () async {
-                            await context.push('/close-time/detail/${_requests[index].requestId}');
-                            _loadRequests();
-                          },
-                        ),
-                      ),
-                    ),
+          ? _buildError(isArabic)
+          : _requests.isEmpty
+          ? _buildEmpty(isArabic)
+          : RefreshIndicator(
+              onRefresh: _loadRequests,
+              child: ListView.separated(
+                padding: const EdgeInsets.all(AppSpacing.s16),
+                itemCount: _requests.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: AppSpacing.s12),
+                itemBuilder: (context, index) => _RequestCard(
+                  request: _requests[index],
+                  isArabic: isArabic,
+                  statusColor: _statusColor(_requests[index].requestStatus),
+                  statusBgColor: _statusBgColor(_requests[index].requestStatus),
+                  onTap: () async {
+                    await context.push(
+                      '/close-time/detail/${_requests[index].requestId}',
+                    );
+                    _loadRequests();
+                  },
+                ),
+              ),
+            ),
     );
   }
 
@@ -127,12 +131,18 @@ class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(FontAwesomeIcons.circleExclamation, size: 48, color: AppColors.error),
+            FaIcon(
+              FontAwesomeIcons.circleExclamation,
+              size: 48,
+              color: AppColors.error,
+            ),
             const SizedBox(height: AppSpacing.s16),
             Text(
               _error!,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.error),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: AppColors.error),
             ),
             const SizedBox(height: AppSpacing.s16),
             OutlinedButton.icon(
@@ -151,16 +161,26 @@ class _CloseTimeRequestsScreenState extends State<CloseTimeRequestsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FaIcon(FontAwesomeIcons.calendarXmark, size: 56, color: AppColors.mutedText.withAlpha(120)),
+          FaIcon(
+            FontAwesomeIcons.calendarXmark,
+            size: 56,
+            color: AppColors.mutedText.withAlpha(120),
+          ),
           const SizedBox(height: AppSpacing.s16),
           Text(
             isArabic ? 'لا توجد طلبات' : 'No Requests Found',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.mutedText),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: AppColors.mutedText),
           ),
           const SizedBox(height: AppSpacing.s8),
           Text(
-            isArabic ? 'اضغط + لإنشاء طلب جديد' : 'Tap + to create a new request',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.mutedText),
+            isArabic
+                ? 'اضغط + لإنشاء طلب جديد'
+                : 'Tap + to create a new request',
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.mutedText),
           ),
         ],
       ),
@@ -187,7 +207,9 @@ class _RequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusLabel = isArabic ? request.statusLabelAr : request.statusLabelEn;
+    final statusLabel = isArabic
+        ? request.statusLabelAr
+        : request.statusLabelEn;
     final timeRange = request.isFullDay
         ? (isArabic ? 'يوم كامل' : 'Full Day')
         : '${request.startTime ?? '--'} - ${request.endTime ?? '--'}';
@@ -198,8 +220,7 @@ class _RequestCard extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.s16),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.r16),
-          border: Border.all(color: AppColors.border),
+          borderRadius: BorderRadius.circular(AppRadius.r20),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(6),
@@ -215,7 +236,7 @@ class _RequestCard extends StatelessWidget {
               width: 54,
               padding: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
-                color: AppColors.primary500.withAlpha(15),
+                color: AppColors.softGreen,
                 borderRadius: BorderRadius.circular(AppRadius.r12),
               ),
               child: Column(
@@ -223,17 +244,17 @@ class _RequestCard extends StatelessWidget {
                   Text(
                     _dayFromDate(request.closeTimeDate),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.primary500,
-                        ),
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.greenDark,
+                    ),
                   ),
                   Text(
                     _monthFromDate(request.closeTimeDate),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.primary500,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                        ),
+                      color: AppColors.greenDark,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 10,
+                    ),
                   ),
                 ],
               ),
@@ -248,20 +269,24 @@ class _RequestCard extends StatelessWidget {
                   Text(
                     request.closeTimeDate,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.headingText,
-                        ),
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      FaIcon(FontAwesomeIcons.clock, size: 12, color: AppColors.mutedText),
+                      FaIcon(
+                        FontAwesomeIcons.clock,
+                        size: 12,
+                        color: AppColors.mutedText,
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         timeRange,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppColors.mutedText,
-                            ),
+                          color: AppColors.mutedText,
+                        ),
                       ),
                     ],
                   ),
@@ -272,8 +297,8 @@ class _RequestCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.mutedText,
-                          ),
+                        color: AppColors.mutedText,
+                      ),
                     ),
                   ],
                 ],
@@ -291,10 +316,10 @@ class _RequestCard extends StatelessWidget {
               child: Text(
                 statusLabel,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: statusColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 11,
-                    ),
+                  color: statusColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 11,
+                ),
               ),
             ),
           ],
@@ -312,7 +337,20 @@ class _RequestCard extends StatelessWidget {
   }
 
   String _monthFromDate(String date) {
-    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    const months = [
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC',
+    ];
     try {
       return months[DateTime.parse(date).month - 1];
     } catch (_) {
