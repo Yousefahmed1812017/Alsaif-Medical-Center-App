@@ -14,6 +14,11 @@ class PatientTypeSelectionScreen extends StatelessWidget {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: const BackButton(),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.s24),
@@ -21,22 +26,6 @@ class PatientTypeSelectionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(flex: 1),
-              // Logo or Header Graphic
-              Center(
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return FaIcon(
-                      FontAwesomeIcons.hospital,
-                      size: 64,
-                      color: AppColors.primary500,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: AppSpacing.s32),
               Text(
                 isArabic ? 'أهلاً بك في مجمع السيف الطبي' : 'Welcome to Alsaif Medical',
                 style: Theme.of(context).textTheme.headlineMedium,
@@ -54,25 +43,24 @@ class PatientTypeSelectionScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.s48),
 
-              // Existing Patient Card
-              _PatientTypeCard(
-                icon: FontAwesomeIcons.userCheck,
-                title: isArabic ? 'مريض حالي' : 'Existing Patient',
-                description: isArabic
-                    ? 'تسجيل الدخول للاطلاع على ملفك الطبي والمواعيد.'
-                    : 'Log in to view your medical records and appointments.',
-                onTap: () => context.push('/login'),
-              ),
-              const SizedBox(height: AppSpacing.s16),
-
-              // New Patient Card
-              _PatientTypeCard(
-                icon: FontAwesomeIcons.userPlus,
-                title: isArabic ? 'مريض جديد' : 'New Patient',
-                description: isArabic
-                    ? 'إنشاء ملف رقمي جديد وفتح سجل طبي.'
-                    : 'Create a new digital profile and medical record.',
-                onTap: () => context.push('/new-patient'),
+              Row(
+                children: [
+                  Expanded(
+                    child: _PatientTypeCard(
+                      imagePath: 'assets/images/patientIn.png',
+                      title: isArabic ? 'مريض حالي' : 'Existing Patient',
+                      onTap: () => context.push('/login'),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.s16),
+                  Expanded(
+                    child: _PatientTypeCard(
+                      imagePath: 'assets/images/patientOut.png',
+                      title: isArabic ? 'مريض جديد' : 'New Patient',
+                      onTap: () => context.push('/new-patient'),
+                    ),
+                  ),
+                ],
               ),
               const Spacer(flex: 2),
             ],
@@ -85,58 +73,39 @@ class PatientTypeSelectionScreen extends StatelessWidget {
 
 class _PatientTypeCard extends StatelessWidget {
   const _PatientTypeCard({
-    required this.icon,
+    required this.imagePath,
     required this.title,
-    required this.description,
     required this.onTap,
   });
 
-  final dynamic icon;
+  final String imagePath;
   final String title;
-  final String description;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return AppCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(AppSpacing.s24),
-      child: Row(
+      color: AppColors.primary100.withAlpha(60), // Soft blue background for the square
+      padding: const EdgeInsets.all(AppSpacing.s16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FaIcon(
-            icon,
-            size: 32,
-            color: AppColors.primary500,
+          Image.asset(
+            imagePath,
+            height: 150, // Larger image
+            fit: BoxFit.contain,
           ),
-          const SizedBox(width: AppSpacing.s20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.headingText,
-                      ),
+          const SizedBox(height: AppSpacing.s16),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.headingText,
                 ),
-                const SizedBox(height: AppSpacing.s8),
-                Text(
-                  description,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.mutedText,
-                      ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: AppSpacing.s16),
-          FaIcon(
-            Directionality.of(context) == TextDirection.rtl
-                ? FontAwesomeIcons.chevronLeft
-                : FontAwesomeIcons.chevronRight,
-            size: 16,
-            color: AppColors.border,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

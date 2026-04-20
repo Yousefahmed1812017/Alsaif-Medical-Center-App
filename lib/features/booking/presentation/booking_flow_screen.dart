@@ -318,7 +318,7 @@ class _StepInfo {
   String label(bool isArabic) => isArabic ? labelAr : labelEn;
 }
 
-// ─── Step Indicator ─────────────────────────────────────────────────────────
+// ─── Step Indicator (Wizard Style) ──────────────────────────────────────────
 
 class _StepIndicator extends StatelessWidget {
   const _StepIndicator({
@@ -335,8 +335,8 @@ class _StepIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.s16,
-        vertical: AppSpacing.s12,
+        horizontal: AppSpacing.s20,
+        vertical: AppSpacing.s16,
       ),
       decoration: const BoxDecoration(
         color: AppColors.surface,
@@ -344,41 +344,38 @@ class _StepIndicator extends StatelessWidget {
           bottom: BorderSide(color: AppColors.border, width: 1),
         ),
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: List.generate(steps.length, (index) {
-            final isCompleted = index < currentStep;
-            final isCurrent = index == currentStep;
-
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Step circle + label
-                _StepDot(
-                  step: steps[index],
-                  isCompleted: isCompleted,
-                  isCurrent: isCurrent,
-                  isArabic: isArabic,
-                  index: index,
+      child: Row(
+        children: List.generate(steps.length * 2 - 1, (i) {
+          if (i.isOdd) {
+            // Connector line
+            final stepIndex = i ~/ 2;
+            final isCompleted = stepIndex < currentStep;
+            return Expanded(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 350),
+                height: 3,
+                decoration: BoxDecoration(
+                  color: isCompleted
+                      ? AppColors.primary500
+                      : AppColors.border,
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                // Connector line
-                if (index < steps.length - 1)
-                  Container(
-                    width: 24,
-                    height: 2,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      color: isCompleted
-                          ? AppColors.primary500
-                          : AppColors.border,
-                      borderRadius: BorderRadius.circular(1),
-                    ),
-                  ),
-              ],
+              ),
             );
-          }),
-        ),
+          }
+
+          final index = i ~/ 2;
+          final isCompleted = index < currentStep;
+          final isCurrent = index == currentStep;
+
+          return _StepDot(
+            step: steps[index],
+            isCompleted: isCompleted,
+            isCurrent: isCurrent,
+            isArabic: isArabic,
+            index: index,
+          );
+        }),
       ),
     );
   }
@@ -401,44 +398,67 @@ class _StepDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isCompleted || isCurrent
-        ? AppColors.primary500
-        : AppColors.mutedText;
-    final bgColor = isCurrent
-        ? AppColors.primary500.withAlpha(25)
-        : isCompleted
-            ? AppColors.primary500.withAlpha(15)
-            : Colors.transparent;
+    final Color bgColor;
+    final Color iconColor;
+    final Color borderColor;
+
+    if (isCompleted) {
+      bgColor = AppColors.primary500;
+      iconColor = Colors.white;
+      borderColor = AppColors.primary500;
+    } else if (isCurrent) {
+      bgColor = Colors.white;
+      iconColor = AppColors.primary500;
+      borderColor = AppColors.primary500;
+    } else {
+      bgColor = AppColors.background;
+      iconColor = AppColors.mutedText;
+      borderColor = AppColors.border;
+    }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          width: 36,
-          height: 36,
+          duration: const Duration(milliseconds: 300),
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             color: bgColor,
             shape: BoxShape.circle,
-            border: Border.all(
-              color: isCurrent ? AppColors.primary500 : color.withAlpha(60),
-              width: isCurrent ? 2 : 1,
-            ),
+            border: Border.all(color: borderColor, width: 2),
+            boxShadow: isCurrent
+                ? [
+                    BoxShadow(
+                      color: AppColors.primary500.withAlpha(50),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
           ),
           child: Center(
             child: isCompleted
-                ? const FaIcon(FontAwesomeIcons.check,
-                    size: 13, color: AppColors.primary500)
-                : FaIcon(step.icon, size: 13, color: color),
+                ? const FaIcon(
+                    FontAwesomeIcons.check,
+                    size: 14,
+                    color: Colors.white,
+                  )
+                : FaIcon(step.icon, size: 14, color: iconColor),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         Text(
           step.label(isArabic),
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontSize: 10,
-                fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
-                color: isCurrent ? AppColors.primary500 : AppColors.mutedText,
+                fontWeight:
+                    isCurrent ? FontWeight.w700 : FontWeight.w500,
+                color: isCurrent
+                    ? AppColors.primary700
+                    : isCompleted
+                        ? AppColors.primary500
+                        : AppColors.mutedText,
               ),
         ),
       ],

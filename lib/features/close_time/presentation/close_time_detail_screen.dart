@@ -325,7 +325,7 @@ class _DetailRow extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: AppColors.softGreen,
+            color: AppColors.primary100,
             borderRadius: BorderRadius.circular(AppRadius.r8),
           ),
           child: Center(

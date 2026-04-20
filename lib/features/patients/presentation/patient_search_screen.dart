@@ -273,7 +273,7 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.primaryGreen.withAlpha(12),
+                color: AppColors.primary500.withAlpha(12),
                 shape: BoxShape.circle,
               ),
               child: const Center(
@@ -618,7 +618,7 @@ class _PatientCard extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.softGreen,
+                color: AppColors.primary100,
                 borderRadius: BorderRadius.circular(AppRadius.r12),
               ),
               child: Center(

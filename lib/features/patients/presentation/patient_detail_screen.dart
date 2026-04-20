@@ -168,7 +168,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen>
               ),
               indicatorSize: TabBarIndicatorSize.tab,
               dividerColor: Colors.transparent,
-              labelColor: AppColors.primaryGreen,
+              labelColor: AppColors.primary500,
               unselectedLabelColor: AppColors.textSecondary,
               labelStyle: Theme.of(
                 context,
@@ -220,7 +220,7 @@ class _TopInfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.r24),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryGreen.withAlpha(60),
+            color: AppColors.primary500.withAlpha(60),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -461,7 +461,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        FaIcon(icon, size: 16, color: AppColors.primaryGreen),
+        FaIcon(icon, size: 16, color: AppColors.primary500),
         const SizedBox(width: AppSpacing.s8),
         Text(
           title,
@@ -516,11 +516,11 @@ class _InfoRow extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.softGreen,
+              color: AppColors.primary100,
               borderRadius: BorderRadius.circular(AppRadius.r8),
             ),
             child: Center(
-              child: FaIcon(icon, size: 14, color: AppColors.primaryGreen),
+              child: FaIcon(icon, size: 14, color: AppColors.primary500),
             ),
           ),
           const SizedBox(width: AppSpacing.s12),
@@ -584,7 +584,7 @@ class _CheckListItem extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: isCompleted ? AppColors.softGreen : AppColors.softSurface,
+              color: isCompleted ? AppColors.primary100 : AppColors.softSurface,
               borderRadius: BorderRadius.circular(AppRadius.r8),
             ),
             child: Center(
@@ -594,7 +594,7 @@ class _CheckListItem extends StatelessWidget {
                     : FontAwesomeIcons.circle,
                 size: 16,
                 color: isCompleted
-                    ? AppColors.primaryGreen
+                    ? AppColors.primary500
                     : AppColors.mutedText,
               ),
             ),

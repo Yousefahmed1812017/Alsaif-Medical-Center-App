@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../theme/app_colors.dart';
@@ -61,7 +61,7 @@ class AppButton extends StatelessWidget {
           onPressed: effectiveOnPressed,
           style: ElevatedButton.styleFrom(
             elevation: 0,
-            backgroundColor: AppColors.primaryGreen,
+            backgroundColor: AppColors.primary500,
             foregroundColor: AppColors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.r16),
@@ -79,8 +79,8 @@ class AppButton extends StatelessWidget {
           onPressed: effectiveOnPressed,
           style: OutlinedButton.styleFrom(
             elevation: 0,
-            foregroundColor: AppColors.accentBlue,
-            side: const BorderSide(color: AppColors.accentBlue, width: 1.5),
+            foregroundColor: AppColors.primary500,
+            side: const BorderSide(color: AppColors.primary500, width: 1.5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.r16),
             ),
@@ -90,13 +90,13 @@ class AppButton extends StatelessWidget {
             ),
             minimumSize: isFullWidth ? const Size(double.infinity, 52) : null,
           ),
-          child: _overrideLoadingColor(buttonContent, AppColors.accentBlue),
+          child: _overrideLoadingColor(buttonContent, AppColors.primary500),
         );
       case AppButtonType.text:
         return TextButton(
           onPressed: effectiveOnPressed,
           style: TextButton.styleFrom(
-            foregroundColor: AppColors.accentBlue,
+            foregroundColor: AppColors.primary500,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.r16),
             ),
@@ -105,7 +105,7 @@ class AppButton extends StatelessWidget {
               vertical: AppSpacing.s8,
             ),
           ),
-          child: _overrideLoadingColor(buttonContent, AppColors.accentBlue),
+          child: _overrideLoadingColor(buttonContent, AppColors.primary500),
         );
     }
   }
@@ -120,3 +120,4 @@ class AppButton extends StatelessWidget {
     );
   }
 }
+

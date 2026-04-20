@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../theme/app_colors.dart';
@@ -19,13 +19,13 @@ class AppFab extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: const LinearGradient(
-          colors: [AppColors.primaryGreen, AppColors.greenDark],
+          colors: [AppColors.primary500, AppColors.primary900],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryGreen.withAlpha(80),
+            color: AppColors.primary500.withAlpha(80),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -40,3 +40,4 @@ class AppFab extends StatelessWidget {
     );
   }
 }
+

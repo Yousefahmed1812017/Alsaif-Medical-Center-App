@@ -57,6 +57,11 @@ class _LoginScreenState extends State<LoginScreen>
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: const BackButton(),
+        ),
         backgroundColor: AppColors.background,
         body: SafeArea(
           child: Column(
@@ -77,29 +82,16 @@ class _LoginScreenState extends State<LoginScreen>
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.s24,
                   ),
-                  child: Column(
-                    children: [
-                      Text(
-                        isArabic ? 'مرحباً بعودتك' : 'Welcome Back',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              color: AppColors.primary600,
-                              fontWeight: FontWeight.w800,
-                            ),
-                      ),
-                      const SizedBox(height: AppSpacing.s4),
-                      Text(
-                        isArabic
-                            ? 'يرجى إدخال بياناتك للمتابعة'
-                            : 'Please enter your details to continue',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: AppColors.mutedText,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                  child: Text(
+                    isArabic ? 'تسجيل الدخول' : 'Login',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(
+                          color: AppColors.primary900,
+                          fontWeight: FontWeight.w800,
+                        ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
@@ -112,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen>
                   horizontal: AppSpacing.s24,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary50,
+                  color: AppColors.primary100,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 padding: const EdgeInsets.all(4),
@@ -130,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   labelColor: Colors.white,
-                  unselectedLabelColor: AppColors.primary600,
+                  unselectedLabelColor: AppColors.primary700,
                   labelStyle: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -175,6 +167,30 @@ class _LoginScreenState extends State<LoginScreen>
                   ],
                 ),
               ),
+              const SizedBox(height: AppSpacing.s16),
+              // Powered by footer
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Powered by',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: AppColors.mutedText,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.s4),
+                    Image.asset(
+                      'assets/images/LogoWinsystem.png',
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.s16),
             ],
           ),
         ),
@@ -198,28 +214,30 @@ class _LogoHeader extends StatelessWidget {
         AppSpacing.s24,
         AppSpacing.s20,
       ),
-      child: Container(
-        width: 96,
-        height: 96,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary500.withAlpha(40),
-              blurRadius: 24,
-              offset: const Offset(0, 10),
+      child: Center(
+        child: Container(
+          width: 96,
+          height: 96,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary500.withAlpha(40),
+                blurRadius: 24,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(14),
+          child: Image.asset(
+            'assets/images/app_icon.png',
+            fit: BoxFit.contain,
+            errorBuilder: (ctx, err, stack) => const FaIcon(
+              FontAwesomeIcons.hospital,
+              color: AppColors.primary500,
+              size: 52,
             ),
-          ],
-        ),
-        padding: const EdgeInsets.all(14),
-        child: Image.asset(
-          'assets/images/logo.png',
-          fit: BoxFit.contain,
-          errorBuilder: (ctx, err, stack) => const FaIcon(
-            FontAwesomeIcons.hospital,
-            color: AppColors.primary500,
-            size: 52,
           ),
         ),
       ),
@@ -315,7 +333,7 @@ class _LoginTabContent extends StatelessWidget {
 // ════════════════════════════════════════════════════════════
 //  CUSTOM INPUT FIELD  (icon on leading side / right in RTL)
 // ════════════════════════════════════════════════════════════
-class CustomInputField extends StatefulWidget {
+class CustomInputField extends StatelessWidget {
   const CustomInputField({
     super.key,
     this.controller,
@@ -334,101 +352,38 @@ class CustomInputField extends StatefulWidget {
   final Widget? suffixIcon;
 
   @override
-  State<CustomInputField> createState() => _CustomInputFieldState();
-}
-
-class _CustomInputFieldState extends State<CustomInputField> {
-  final FocusNode _focusNode = FocusNode();
-  bool _isFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() {
-      setState(() => _isFocused = _focusNode.hasFocus);
-    });
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: _isFocused ? AppColors.primary500 : AppColors.divider,
-          width: _isFocused ? 1.6 : 1.0,
-        ),
-        boxShadow: _isFocused
-            ? [
-                BoxShadow(
-                  color: AppColors.primary500.withAlpha(30),
-                  blurRadius: 14,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: Colors.black.withAlpha(5),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      cursorColor: AppColors.primary500,
+      style: const TextStyle(
+        fontSize: 15,
+        color: AppColors.textPrimary,
+        fontWeight: FontWeight.w500,
       ),
-      child: TextField(
-        controller: widget.controller,
-        focusNode: _focusNode,
-        keyboardType: widget.keyboardType,
-        obscureText: widget.obscureText,
-        cursorColor: AppColors.primary500,
-        style: const TextStyle(
-          fontSize: 15,
-          color: AppColors.textPrimary,
-          fontWeight: FontWeight.w500,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: Padding(
+          padding: const EdgeInsetsDirectional.only(start: 16, end: 12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FaIcon(
+                icon,
+                size: 20,
+                color: AppColors.textSecondary,
+              ),
+            ],
+          ),
         ),
-        decoration: InputDecoration(
-          hintText: widget.hintText,
-          hintStyle: const TextStyle(
-            color: AppColors.mutedText,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          ),
-          // Icon on leading side — in RTL this renders on the RIGHT.
-          prefixIcon: Padding(
-            padding: const EdgeInsetsDirectional.only(
-              start: 16,
-              end: 12,
-            ),
-            child: FaIcon(
-              widget.icon,
-              size: 18,
-              color: _isFocused
-                  ? AppColors.primary500
-                  : AppColors.textSecondary,
-            ),
-          ),
-          prefixIconConstraints: const BoxConstraints(
-            minWidth: 44,
-            minHeight: 44,
-          ),
-          suffixIcon: widget.suffixIcon,
-          // Gap between icon and text + vertical breathing room
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
-          ),
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          filled: false,
+        prefixIconConstraints: const BoxConstraints(
+          minWidth: 48,
+          minHeight: 48,
         ),
+        suffixIcon: suffixIcon,
       ),
     );
   }

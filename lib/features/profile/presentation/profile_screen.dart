@@ -9,6 +9,7 @@ import '../../../core/theme/app_radius.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_button.dart';
+import '../../../main.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -210,11 +211,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       case 'ADMIN':
         return AppColors.error;
       case 'DOCTOR':
-        return AppColors.primaryGreen;
+        return AppColors.primary500;
       case 'EMPLOYEE':
-        return AppColors.accentBlue;
+        return AppColors.primary700;
       default:
-        return AppColors.primaryGreen;
+        return AppColors.primary500;
     }
   }
 }
@@ -249,7 +250,7 @@ class _ProfileHeader extends StatelessWidget {
       ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF16A34A), Color(0xFF22C55E)],
+          colors: [Color(0xFF015C92), Color(0xFF2D82B5)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -259,6 +260,52 @@ class _ProfileHeader extends StatelessWidget {
       ),
       child: Column(
         children: [
+          // Language switcher
+          Align(
+            alignment: isArabic ? Alignment.centerLeft : Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () {
+                final current = appLocaleNotifier.value.languageCode;
+                appLocaleNotifier.value =
+                    Locale(current == 'ar' ? 'en' : 'ar');
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.s16,
+                  vertical: AppSpacing.s8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(30),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withAlpha(60),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const FaIcon(
+                      FontAwesomeIcons.language,
+                      size: 14,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      isArabic ? 'English' : 'عربي',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.s16),
+          // Avatar
           Container(
             width: 88,
             height: 88,
@@ -351,7 +398,7 @@ class _SectionCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                FaIcon(icon, size: 16, color: AppColors.primaryGreen),
+                FaIcon(icon, size: 16, color: AppColors.primary500),
                 const SizedBox(width: AppSpacing.s8),
                 Text(
                   title,
@@ -401,11 +448,11 @@ class _InfoRow extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.softGreen,
+              color: AppColors.primary100,
               borderRadius: BorderRadius.circular(AppRadius.r8),
             ),
             child: Center(
-              child: FaIcon(icon, size: 14, color: AppColors.primaryGreen),
+              child: FaIcon(icon, size: 14, color: AppColors.primary500),
             ),
           ),
           const SizedBox(width: AppSpacing.s12),

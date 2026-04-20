@@ -48,7 +48,7 @@ class DashboardHeader extends StatelessWidget {
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF16A34A), Color(0xFF22C55E)],
+          colors: [Color(0xFF015C92), Color(0xFF2D82B5)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -115,19 +115,16 @@ class DashboardHeader extends StatelessWidget {
                 ),
               ),
               Container(
-                width: 44,
-                height: 44,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
                   color: Colors.white.withAlpha(25),
+                  borderRadius: BorderRadius.circular(14),
                 ),
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const FaIcon(
-                    FontAwesomeIcons.bell,
-                    size: 18,
-                    color: Colors.white,
-                  ),
+                padding: const EdgeInsets.all(6),
+                child: Image.asset(
+                  'assets/images/app_icon.png',
+                  fit: BoxFit.contain,
                 ),
               ),
             ],

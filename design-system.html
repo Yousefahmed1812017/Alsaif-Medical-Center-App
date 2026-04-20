@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design System & Style Guide</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Primary Colors */
+            --primary-900: #015C92;
+            --primary-700: #2D82B5;
+            --primary-500: #53A7D8;
+            --primary-300: #88CDF6;
+            --primary-100: #BCE6FF;
+
+            /* Neutral Colors */
+            --neutral-900: #1E293B;
+            --neutral-800: #334155;
+            --neutral-600: #475569;
+            --neutral-500: #64748B;
+            --neutral-300: #CBD5E1;
+            --neutral-200: #E2E8F0;
+            --neutral-100: #F1F5F9;
+            --neutral-50:  #F8FAFC;
+            --white: #FFFFFF;
+
+            /* Semantic Colors */
+            --success-bg: #DCFCE7;
+            --success-text: #15803D;
+            --success-border: #22C55E;
+            
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --error-border: #EF4444;
+            
+            --warning-bg: #FEF9C3;
+            --warning-text: #A16207;
+            --warning-border: #EAB308;
+            
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+            --info-border: #3B82F6;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+            
+            /* Radius */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+            
+            /* Typography */
+            --font-en: 'Poppins', sans-serif;
+            --font-ar: 'Cairo', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-en);
+            background-color: var(--neutral-50);
+            color: var(--neutral-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 260px;
+            background: var(--white);
+            border-right: 1px solid var(--neutral-200);
+            overflow-y: auto;
+            padding: 32px 0;
+            box-shadow: var(--shadow-md);
+            z-index: 100;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 10px 24px;
+            color: var(--neutral-600);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            color: var(--primary-700);
+            background: var(--primary-100);
+            border-right: 3px solid var(--primary-700);
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 48px;
+        }
+
+        @media(max-width: 1024px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 24px; }
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--neutral-900); line-height: 1.2; margin-bottom: 16px; }
+        h1 { font-size: 36px; }
+        h2 { font-size: 30px; border-bottom: 2px solid var(--neutral-200); padding-bottom: 8px; margin-top: 48px; }
+        h3 { font-size: 24px; margin-top: 32px; }
+        p { color: var(--neutral-600); margin-bottom: 16px; }
+
+        /* RTL/LTR Support */
+        .rtl { direction: rtl; font-family: var(--font-ar); text-align: right; }
+        .ltr { direction: ltr; font-family: var(--font-en); text-align: left; }
+        
+        .bilingual-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+        
+        @media(max-width: 768px) {
+            .bilingual-grid { grid-template-columns: 1fr; }
+        }
+
+        .lang-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--neutral-200);
+        }
+        
+        .lang-badge {
+            display: inline-block;
+            background: var(--primary-100);
+            color: var(--primary-900);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            margin-bottom: 16px;
+        }
+
+        /* Components */
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            outline: none;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        /* Icon positioning correctly based on direction */
+        .btn i { font-size: 16px; }
+        .rtl .btn i { margin-left: 8px; margin-right: 0; }
+        .ltr .btn i { margin-right: 8px; margin-left: 0; }
+
+        .btn-primary { background: var(--primary-500); color: var(--white); box-shadow: 0 2px 4px rgba(83, 167, 216, 0.2); }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-700); box-shadow: 0 4px 6px rgba(45, 130, 181, 0.3); }
+        .btn-primary:focus { box-shadow: 0 0 0 3px var(--primary-100); }
+
+        .btn-secondary { background: var(--primary-100); color: var(--primary-900); }
+        .btn-secondary:hover:not(:disabled) { background: var(--primary-300); }
+
+        .btn-outline { background: transparent; border-color: var(--neutral-300); color: var(--neutral-800); }
+        .btn-outline:hover:not(:disabled) { border-color: var(--primary-500); color: var(--primary-700); background: var(--primary-100); }
+
+        .btn-ghost { background: transparent; color: var(--neutral-600); }
+        .btn-ghost:hover:not(:disabled) { background: var(--neutral-100); color: var(--neutral-900); }
+
+        .btn-danger { background: var(--error-border); color: var(--white); }
+        .btn-danger:hover:not(:disabled) { background: var(--error-text); }
+
+        .btn-success { background: var(--success-border); color: var(--white); }
+        .btn-success:hover:not(:disabled) { background: var(--success-text); }
+
+        .btn-sm { padding: 6px 14px; font-size: 13px; border-radius: var(--radius-sm); }
+        .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: var(--radius-lg); }
+        .btn-icon { padding: 10px; border-radius: var(--radius-full); }
+        .btn-icon i { margin: 0 !important; }
+
+        /* Forms */
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--neutral-800); margin-bottom: 6px; }
+        .form-control-wrapper { position: relative; display: flex; align-items: center; }
+        .form-control {
+            width: 100%;
+            font-family: inherit;
+            font-size: 14px;
+            padding: 12px 16px;
+            border: 1px solid var(--neutral-300);
+            border-radius: var(--radius-md);
+            background: var(--white);
+            color: var(--neutral-900);
+            transition: all 0.2s;
+            outline: none;
+        }
+        .form-control::placeholder { color: var(--neutral-500); }
+        .form-control:hover:not(:disabled) { border-color: var(--neutral-500); }
+        .form-control:focus { border-color: var(--primary-500); box-shadow: 0 0 0 3px var(--primary-100); }
+        .form-control:disabled { background: var(--neutral-100); color: var(--neutral-500); cursor: not-allowed; }
+        
+        .form-control.is-invalid { border-color: var(--error-border); }
+        .form-control.is-invalid:focus { box-shadow: 0 0 0 3px var(--error-bg); }
+        .form-control.is-valid { border-color: var(--success-border); }
+        .form-control.is-valid:focus { box-shadow: 0 0 0 3px var(--success-bg); }
+        
+        .form-text { font-size: 12px; color: var(--neutral-500); margin-top: 6px; }
+        .form-text.error { color: var(--error-border); }
+
+        .input-icon { position: absolute; color: var(--neutral-500); font-size: 16px; pointer-events: none; }
+        .ltr .input-icon-left { left: 16px; }
+        .ltr .input-icon-right { right: 16px; }
+        .ltr .has-icon-left { padding-left: 44px; }
+        .ltr .has-icon-right { padding-right: 44px; }
+
+        .rtl .input-icon-left { right: 16px; }
+        .rtl .input-icon-right { left: 16px; }
+        .rtl .has-icon-left { padding-right: 44px; }
+        .rtl .has-icon-right { padding-left: 44px; }
+
+        /* Checkbox & Radio & Toggle */
+        .check-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 12px; }
+        .check-wrap input[type="checkbox"], .check-wrap input[type="radio"] { 
+            width: 18px; height: 18px; accent-color: var(--primary-500); cursor: pointer;
+        }
+        .check-label { font-size: 14px; color: var(--neutral-800); }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--neutral-300); transition: .3s; border-radius: 24px;
+        }
+        .toggle-slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%; box-shadow: var(--shadow-sm);
+        }
+        .toggle-switch input:checked + .toggle-slider { background-color: var(--primary-500); }
+        .toggle-switch input:focus + .toggle-slider { box-shadow: 0 0 0 3px var(--primary-100); }
+        .ltr .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+        .rtl .toggle-switch input:checked + .toggle-slider:before { transform: translateX(-20px); }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--neutral-200);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .card-body { padding: 24px; }
+        .card-header { padding: 20px 24px; border-bottom: 1px solid var(--neutral-200); display: flex; justify-content: space-between; align-items: center; }
+        .card-footer { padding: 16px 24px; border-top: 1px solid var(--neutral-200); background: var(--neutral-50); display: flex; gap: 12px; }
+        
+        .icon-box { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .icon-box-primary { background: var(--primary-100); color: var(--primary-700); }
+        .icon-box-success { background: var(--success-bg); color: var(--success-text); }
+
+        /* Badges */
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+            border-radius: var(--radius-full); font-size: 12px; font-weight: 600;
+        }
+        .badge-primary { background: var(--primary-100); color: var(--primary-900); }
+        .badge-success { background: var(--success-bg); color: var(--success-text); }
+        .badge-warning { background: var(--warning-bg); color: var(--warning-text); }
+        .badge-error { background: var(--error-bg); color: var(--error-text); }
+        
+        /* Alerts */
+        .alert {
+            padding: 16px; border-radius: var(--radius-md); display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; border: 1px solid transparent;
+        }
+        .alert-icon { font-size: 20px; margin-top: 2px; }
+        .alert-content { flex: 1; }
+        .alert-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+        .alert-desc { font-size: 13px; }
+        .alert-close { background: none; border: none; cursor: pointer; font-size: 16px; opacity: 0.5; transition: 0.2s; }
+        .alert-close:hover { opacity: 1; }
+
+        .alert-info { background: var(--info-bg); border-color: var(--info-border); color: var(--info-text); }
+        .alert-success { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+        .alert-warning { background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text); }
+        .alert-error { background: var(--error-bg); border-color: var(--error-border); color: var(--error-text); }
+
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid var(--neutral-200); gap: 24px; margin-bottom: 24px; }
+        .tab { padding: 12px 4px; font-weight: 500; font-size: 14px; color: var(--neutral-500); cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; }
+        .tab:hover { color: var(--neutral-900); }
+        .tab.active { color: var(--primary-700); border-bottom-color: var(--primary-700); }
+
+        .pills { display: inline-flex; background: var(--neutral-100); padding: 4px; border-radius: var(--radius-md); gap: 4px; }
+        .pill { padding: 8px 16px; font-size: 14px; font-weight: 500; color: var(--neutral-600); border-radius: var(--radius-sm); cursor: pointer; transition: 0.2s; }
+        .pill:hover { color: var(--neutral-900); }
+        .pill.active { background: var(--white); color: var(--primary-700); box-shadow: var(--shadow-sm); }
+
+        /* Tables */
+        .table-wrapper { width: 100%; overflow-x: auto; background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--neutral-200); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        .rtl table { text-align: right; }
+        th, td { padding: 16px 24px; border-bottom: 1px solid var(--neutral-200); font-size: 14px; }
+        th { background: var(--neutral-50); font-weight: 600; color: var(--neutral-600); text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--neutral-50); }
+
+        /* Progress & Loaders */
+        .progress-bg { width: 100%; height: 8px; background: var(--neutral-200); border-radius: var(--radius-full); overflow: hidden; margin-bottom: 8px; }
+        .progress-bar { height: 100%; background: var(--primary-500); border-radius: var(--radius-full); transition: width 0.3s; }
+        
+        .spinner { width: 24px; height: 24px; border: 3px solid var(--neutral-200); border-top-color: var(--primary-500); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .skeleton { background: linear-gradient(90deg, var(--neutral-200) 25%, var(--neutral-100) 50%, var(--neutral-200) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius-sm); }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* Wizard */
+        .wizard { display: flex; align-items: center; justify-content: space-between; position: relative; margin-bottom: 32px; }
+        .wizard::before { content: ''; position: absolute; top: 16px; left: 0; right: 0; height: 2px; background: var(--neutral-200); z-index: 1; }
+        .wizard-step { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--white); padding: 0 8px; }
+        .step-circle { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; border: 2px solid var(--neutral-300); background: var(--white); color: var(--neutral-500); transition: 0.3s; }
+        .step-label { font-size: 13px; font-weight: 500; color: var(--neutral-500); }
+        .wizard-step.active .step-circle { border-color: var(--primary-500); color: var(--primary-700); }
+        .wizard-step.active .step-label { color: var(--primary-900); }
+        .wizard-step.completed .step-circle { background: var(--primary-500); border-color: var(--primary-500); color: white; }
+
+        /* Modals */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 24px; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal { background: var(--white); border-radius: var(--radius-xl); width: 100%; max-width: 480px; box-shadow: var(--shadow-xl); transform: translateY(20px); transition: 0.3s; }
+        .modal-overlay.active .modal { transform: translateY(0); }
+
+        /* Grid Utilities */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .flex { display: flex; }
+        .flex-col { display: flex; flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 8px; }
+        .gap-4 { gap: 16px; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mt-4 { margin-top: 16px; }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 48px 24px; background: var(--white); border-radius: var(--radius-lg); border: 1px dashed var(--neutral-300); }
+        .empty-icon { font-size: 48px; color: var(--neutral-300); margin-bottom: 16px; }
+
+        /* App Preview Mockups */
+        .mockup { width: 320px; height: 600px; background: var(--neutral-50); border-radius: 32px; border: 8px solid var(--neutral-900); overflow: hidden; position: relative; box-shadow: var(--shadow-xl); }
+        .mockup-header { background: var(--primary-700); color: white; padding: 40px 20px 20px; }
+        .mockup-body { padding: 20px; height: calc(100% - 160px); overflow-y: auto; }
+        .mockup-bottom { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: white; border-top: 1px solid var(--neutral-200); display: flex; justify-content: space-around; align-items: center; padding-bottom: 10px; }
+        .mockup-nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--neutral-500); font-size: 10px; }
+        .mockup-nav-item.active { color: var(--primary-700); }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar ltr">
+        <div style="padding: 0 24px 24px; border-bottom: 1px solid var(--neutral-200); margin-bottom: 24px;">
+            <div style="width: 40px; height: 40px; background: var(--primary-700); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px;">
+                <i class="fa-solid fa-hospital"></i>
+            </div>
+            <h3 style="margin: 0; font-size: 16px;">Alsaif Medical</h3>
+            <p style="margin: 0; font-size: 12px; color: var(--neutral-500);">Design System v1.0</p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="#hero">Overview</a></li>
+            <li><a href="#colors">Colors</a></li>
+            <li><a href="#typography">Typography</a></li>
+            <li><a href="#icons">Iconography</a></li>
+            <li><a href="#buttons">Buttons</a></li>
+            <li><a href="#inputs">Inputs & Forms</a></li>
+            <li><a href="#cards">Cards</a></li>
+            <li><a href="#tabs">Tabs & Segmented</a></li>
+            <li><a href="#badges">Badges & Tags</a></li>
+            <li><a href="#alerts">Alerts & Notifications</a></li>
+            <li><a href="#tables">Tables</a></li>
+            <li><a href="#modals">Modals</a></li>
+            <li><a href="#progress">Progress & Loading</a></li>
+            <li><a href="#wizard">Wizard</a></li>
+            <li><a href="#empty">Empty States</a></li>
+            <li><a href="#preview">App Previews</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <!-- 1. Hero Section -->
+        <section id="hero" class="ltr">
+            <div class="flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1>Alsaif Medical Design System</h1>
+                    <p style="font-size: 18px; max-width: 800px;">A comprehensive, bilingual component library designed to build premium, modern, and accessible digital healthcare experiences.</p>
+                </div>
+                <button id="downloadSkillBtn" class="btn btn-primary" style="box-shadow: var(--shadow-md); font-size: 16px; padding: 12px 24px;">
+                    <i class="fa-solid fa-robot"></i> Download AI Skill (.md)
+                </button>
+            </div>
+            
+            <div class="alert alert-info mt-4" style="max-width: 800px;">
+                <i class="fa-solid fa-circle-info alert-icon"></i>
+                <div class="alert-content">
+                    <div class="alert-title">Bilingual Architecture</div>
+                    <div class="alert-desc">This system uses <strong>Poppins</strong> for English (LTR) and <strong>Cairo</strong> for Arabic (RTL). Components automatically adapt icon placement and text alignment based on the active directionality.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Colors -->
+        <section id="colors">
+            <h2>Color Palette</h2>
+            <p class="ltr">Primary brand colors and functional semantic colors.</p>
+            
+            <div class="grid-4 ltr mb-4">
+                <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <div style="height: 100px; background: var(--primary-900);"></div>
+                    <div style="padding: 16px; background: white;">
+                        <div style="font-weight: 600; font-size: 14px;">Darkest Blue</div>
+                        <div style="font-size: 12px; color: var(--neutral-500); font-family: monospace;">#015C92</div>
+                    </div>
+                </div>
+                <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <div style="height: 100px; background: var(--primary-700);"></div>
+                    <div style="padding: 16px; background: white;">
+                        <div style="font-weight: 600; font-size: 14px;">Dark Blue (Hover)</div>
+                        <div style="font-size: 12px; color: var(--neutral-500); font-family: monospace;">#2D82B5</div>
+                    </div>
+                </div>
+                <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <div style="height: 100px; background: var(--primary-500);"></div>
+                    <div style="padding: 16px; background: white;">
+                        <div style="font-weight: 600; font-size: 14px;">Primary Brand</div>
+                        <div style="font-size: 12px; color: var(--neutral-500); font-family: monospace;">#53A7D8</div>
+                    </div>
+                </div>
+                <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <div style="height: 100px; background: var(--primary-300);"></div>
+                    <div style="padding: 16px; background: white;">
+                        <div style="font-weight: 600; font-size: 14px;">Light Blue</div>
+                        <div style="font-size: 12px; color: var(--neutral-500); font-family: monospace;">#88CDF6</div>
+                    </div>
+                </div>
+                <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <div style="height: 100px; background: var(--primary-100);"></div>
+                    <div style="padding: 16px; background: white;">
+                        <div style="font-weight: 600; font-size: 14px;">Lightest (Surface)</div>
+                        <div style="font-size: 12px; color: var(--neutral-500); font-family: monospace;">#BCE6FF</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-4 ltr mt-4">
+                <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <div style="height: 100px; background: linear-gradient(135deg, var(--primary-500), var(--primary-900));"></div>
+                    <div style="padding: 16px; background: white;">
+                        <div style="font-weight: 600; font-size: 14px;">Brand Gradient</div>
+                        <div style="font-size: 12px; color: var(--neutral-500);">For Hero / Cards</div>
+                    </div>
+                </div>
+                <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <div style="height: 100px; background: var(--success-bg); border: 2px solid var(--success-border);"></div>
+                    <div style="padding: 16px; background: white;">
+                        <div style="font-weight: 600; font-size: 14px;">Success Semantic</div>
+                        <div style="font-size: 12px; color: var(--neutral-500); font-family: monospace;">#22C55E</div>
+                    </div>
+                </div>
+                <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <div style="height: 100px; background: var(--error-bg); border: 2px solid var(--error-border);"></div>
+                    <div style="padding: 16px; background: white;">
+                        <div style="font-weight: 600; font-size: 14px;">Danger Semantic</div>
+                        <div style="font-size: 12px; color: var(--neutral-500); font-family: monospace;">#EF4444</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Typography -->
+        <section id="typography">
+            <h2>Typography</h2>
+            
+            <div class="bilingual-grid">
+                <!-- English -->
+                <div class="lang-card ltr">
+                    <span class="lang-badge">LTR - Poppins</span>
+                    <h1 style="margin-bottom:8px">Heading 1 (36px Bold)</h1>
+                    <h2 style="margin-top:0; border:none; margin-bottom:8px">Heading 2 (30px Bold)</h2>
+                    <h3 style="margin-top:0; margin-bottom:8px">Heading 3 (24px Semibold)</h3>
+                    <h4 style="margin-top:0; margin-bottom:16px">Heading 4 (20px Medium)</h4>
+                    <p style="font-size: 16px;"><strong>Body Large (16px):</strong> The quick brown fox jumps over the lazy dog. Good design is obvious. Great design is transparent.</p>
+                    <p style="font-size: 14px;"><strong>Body Regular (14px):</strong> The quick brown fox jumps over the lazy dog. Good design is obvious.</p>
+                    <p style="font-size: 12px; color: var(--neutral-500);"><strong>Caption (12px):</strong> Helpful text below inputs or small notes.</p>
+                </div>
+                <!-- Arabic -->
+                <div class="lang-card rtl">
+                    <span class="lang-badge">RTL - Cairo</span>
+                    <h1 style="margin-bottom:8px">العنوان الأول (36px)</h1>
+                    <h2 style="margin-top:0; border:none; margin-bottom:8px">العنوان الثاني (30px)</h2>
+                    <h3 style="margin-top:0; margin-bottom:8px">العنوان الثالث (24px)</h3>
+                    <h4 style="margin-top:0; margin-bottom:16px">العنوان الرابع (20px)</h4>
+                    <p style="font-size: 16px;"><strong>نص كبير (16px):</strong> تصميم واجهة المستخدم الجيدة يجب أن يكون بديهياً. التصميم العظيم يكون شفافاً ويسهل حياة المريض.</p>
+                    <p style="font-size: 14px;"><strong>نص عادي (14px):</strong> تصميم واجهة المستخدم الجيدة يجب أن يكون بديهياً وواضحاً للجميع.</p>
+                    <p style="font-size: 12px; color: var(--neutral-500);"><strong>ملاحظة (12px):</strong> نصوص مساعدة أو شروحات إضافية تحت الحقول.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Icons -->
+        <section id="icons">
+            <h2>Iconography</h2>
+            <p class="ltr">Consistent FontAwesome 6 icons with 24px and 16px sizes.</p>
+            
+            <div class="card ltr mb-4">
+                <div class="card-body flex gap-4 flex-wrap">
+                    <div class="icon-box icon-box-primary"><i class="fa-solid fa-stethoscope"></i></div>
+                    <div class="icon-box" style="background: var(--neutral-100);"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div class="icon-box" style="background: var(--neutral-100);"><i class="fa-regular fa-file-lines"></i></div>
+                    <div class="icon-box icon-box-success"><i class="fa-solid fa-check"></i></div>
+                    <div class="icon-box" style="background: var(--error-bg); color: var(--error-text);"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="icon-box" style="border: 1px solid var(--neutral-300); background: white;"><i class="fa-solid fa-user"></i></div>
+                </div>
+            </div>
+
+            <div class="bilingual-grid">
+                <div class="lang-card ltr">
+                    <span class="lang-badge">LTR Icon Placement</span>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-location-dot" style="color: var(--primary-500);"></i>
+                        <span>Riyadh, Saudi Arabia</span>
+                    </div>
+                    <button class="btn btn-primary mt-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Book Appointment</span>
+                    </button>
+                </div>
+                <div class="lang-card rtl">
+                    <span class="lang-badge">RTL Icon Placement</span>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-location-dot" style="color: var(--primary-500);"></i>
+                        <span>الرياض، المملكة العربية السعودية</span>
+                    </div>
+                    <button class="btn btn-primary mt-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>حجز موعد</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Buttons -->
+        <section id="buttons">
+            <h2>Buttons</h2>
+            
+            <div class="bilingual-grid">
+                <!-- English Buttons -->
+                <div class="lang-card ltr">
+                    <span class="lang-badge">LTR Styles</span>
+                    <div class="flex-col gap-4">
+                        <div class="flex gap-4 flex-wrap">
+                            <button class="btn btn-primary">Primary</button>
+                            <button class="btn btn-secondary">Secondary</button>
+                            <button class="btn btn-outline">Outline</button>
+                            <button class="btn btn-ghost">Ghost</button>
+                        </div>
+                        <div class="flex gap-4 flex-wrap">
+                            <button class="btn btn-danger">Danger</button>
+                            <button class="btn btn-success">Success</button>
+                            <button class="btn btn-primary" disabled>Disabled</button>
+                        </div>
+                        <div class="flex items-center gap-4 flex-wrap mt-2">
+                            <button class="btn btn-primary btn-sm">Small</button>
+                            <button class="btn btn-primary">Medium</button>
+                            <button class="btn btn-primary btn-lg">Large Button</button>
+                            <button class="btn btn-outline btn-icon"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="flex gap-4 flex-wrap mt-2">
+                            <button class="btn btn-primary">
+                                <i class="fa-solid fa-download"></i> Download Report
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fa-solid fa-filter"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arabic Buttons -->
+                <div class="lang-card rtl">
+                    <span class="lang-badge">RTL Styles</span>
+                    <div class="flex-col gap-4">
+                        <div class="flex gap-4 flex-wrap">
+                            <button class="btn btn-primary">رئيسي</button>
+                            <button class="btn btn-secondary">ثانوي</button>
+                            <button class="btn btn-outline">مخطط</button>
+                            <button class="btn btn-ghost">شفاف</button>
+                        </div>
+                        <div class="flex gap-4 flex-wrap">
+                            <button class="btn btn-danger">خطر</button>
+                            <button class="btn btn-success">نجاح</button>
+                            <button class="btn btn-primary" disabled>معطل</button>
+                        </div>
+                        <div class="flex items-center gap-4 flex-wrap mt-2">
+                            <button class="btn btn-primary btn-sm">صغير</button>
+                            <button class="btn btn-primary">متوسط</button>
+                            <button class="btn btn-primary btn-lg">زر كبير</button>
+                            <button class="btn btn-outline btn-icon"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="flex gap-4 flex-wrap mt-2">
+                            <button class="btn btn-primary">
+                                <i class="fa-solid fa-download"></i> تحميل التقرير
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fa-solid fa-filter"></i> تصفية
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Inputs -->
+        <section id="inputs">
+            <h2>Inputs & Forms</h2>
+            
+            <div class="bilingual-grid">
+                <!-- English Forms -->
+                <div class="lang-card ltr">
+                    <span class="lang-badge">LTR Forms</span>
+                    <div class="form-group">
+                        <label class="form-label">Patient Name</label>
+                        <input type="text" class="form-control" placeholder="Enter full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phone Number (Focus)</label>
+                        <div class="form-control-wrapper">
+                            <i class="fa-solid fa-phone input-icon input-icon-left"></i>
+                            <input type="tel" class="form-control has-icon-left" value="+966 50 123 4567" style="border-color: var(--primary-500); box-shadow: 0 0 0 3px var(--primary-100);">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password (Error)</label>
+                        <div class="form-control-wrapper">
+                            <i class="fa-solid fa-lock input-icon input-icon-left"></i>
+                            <input type="password" class="form-control has-icon-left has-icon-right is-invalid" value="123">
+                            <i class="fa-solid fa-eye-slash input-icon input-icon-right" style="cursor: pointer; pointer-events: auto;"></i>
+                        </div>
+                        <div class="form-text error">Password must be at least 8 characters.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <select class="form-control">
+                            <option>Select Department</option>
+                            <option selected>Dental Care</option>
+                            <option>Eye Care</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Notes (Disabled)</label>
+                        <textarea class="form-control" rows="3" disabled>User account is locked.</textarea>
+                    </div>
+                </div>
+
+                <!-- Arabic Forms -->
+                <div class="lang-card rtl">
+                    <span class="lang-badge">RTL Forms</span>
+                    <div class="form-group">
+                        <label class="form-label">اسم المريض</label>
+                        <input type="text" class="form-control" placeholder="أدخل الاسم الكامل">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">رقم الهاتف (Focus)</label>
+                        <div class="form-control-wrapper">
+                            <i class="fa-solid fa-phone input-icon input-icon-right"></i>
+                            <input type="tel" class="form-control has-icon-right" value="+966 50 123 4567" style="border-color: var(--primary-500); box-shadow: 0 0 0 3px var(--primary-100); text-align: left; direction: ltr;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور (Error)</label>
+                        <div class="form-control-wrapper">
+                            <i class="fa-solid fa-lock input-icon input-icon-right"></i>
+                            <input type="password" class="form-control has-icon-right has-icon-left is-invalid" value="123">
+                            <i class="fa-solid fa-eye-slash input-icon input-icon-left" style="cursor: pointer; pointer-events: auto;"></i>
+                        </div>
+                        <div class="form-text error">كلمة المرور يجب أن تتكون من 8 أحرف على الأقل.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">القسم الطبي</label>
+                        <select class="form-control">
+                            <option>اختر القسم</option>
+                            <option selected>رعاية الأسنان</option>
+                            <option>رعاية العيون</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">ملاحظات (معطل)</label>
+                        <textarea class="form-control" rows="3" disabled>حساب المستخدم مغلق حالياً.</textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Cards -->
+        <section id="cards">
+            <h2>Cards</h2>
+            
+            <div class="bilingual-grid">
+                <!-- English -->
+                <div class="ltr">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 style="margin:0; font-size: 16px;">Appointment Details</h3>
+                            <span class="badge badge-success">Confirmed</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="flex items-center gap-4 mb-4">
+                                <img src="https://ui-avatars.com/api/?name=Dr+Ahmed&background=53A7D8&color=fff" style="border-radius: 50%; width: 48px;">
+                                <div>
+                                    <div style="font-weight: 600; color: var(--neutral-900);">Dr. Ahmed Khalid</div>
+                                    <div style="font-size: 13px; color: var(--neutral-500);">Senior Dentist</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 mb-2" style="font-size: 14px; color: var(--neutral-600);">
+                                <i class="fa-regular fa-calendar" style="color: var(--primary-500); width: 16px;"></i> Thu, 12 Apr 2025
+                            </div>
+                            <div class="flex items-center gap-2" style="font-size: 14px; color: var(--neutral-600);">
+                                <i class="fa-regular fa-clock" style="color: var(--primary-500); width: 16px;"></i> 10:30 AM
+                            </div>
+                        </div>
+                        <div class="card-footer justify-between items-center">
+                            <button class="btn btn-outline btn-sm">Reschedule</button>
+                            <button class="btn btn-primary btn-sm">Join Call</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="icon-box icon-box-primary"><i class="fa-solid fa-users"></i></div>
+                                <div>
+                                    <div style="font-size: 13px; color: var(--neutral-500);">Total Patients</div>
+                                    <div style="font-size: 24px; font-weight: 700; color: var(--neutral-900);">1,248</div>
+                                </div>
+                            </div>
+                            <div style="color: var(--success-border); font-size: 13px; font-weight: 600;">
+                                <i class="fa-solid fa-arrow-trend-up"></i> +12%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arabic -->
+                <div class="rtl">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 style="margin:0; font-size: 16px;">تفاصيل الموعد</h3>
+                            <span class="badge badge-success">مؤكد</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="flex items-center gap-4 mb-4">
+                                <img src="https://ui-avatars.com/api/?name=Dr+Ahmed&background=53A7D8&color=fff" style="border-radius: 50%; width: 48px;">
+                                <div>
+                                    <div style="font-weight: 600; color: var(--neutral-900);">د. أحمد خالد</div>
+                                    <div style="font-size: 13px; color: var(--neutral-500);">طبيب أسنان أول</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 mb-2" style="font-size: 14px; color: var(--neutral-600);">
+                                <i class="fa-regular fa-calendar" style="color: var(--primary-500); width: 16px;"></i> الخميس، ١٢ أبريل ٢٠٢٥
+                            </div>
+                            <div class="flex items-center gap-2" style="font-size: 14px; color: var(--neutral-600);">
+                                <i class="fa-regular fa-clock" style="color: var(--primary-500); width: 16px;"></i> ١٠:٣٠ صباحاً
+                            </div>
+                        </div>
+                        <div class="card-footer justify-between items-center">
+                            <button class="btn btn-outline btn-sm">إعادة جدولة</button>
+                            <button class="btn btn-primary btn-sm">دخول المكالمة</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="icon-box icon-box-primary"><i class="fa-solid fa-users"></i></div>
+                                <div>
+                                    <div style="font-size: 13px; color: var(--neutral-500);">إجمالي المرضى</div>
+                                    <div style="font-size: 24px; font-weight: 700; color: var(--neutral-900);">١,٢٤٨</div>
+                                </div>
+                            </div>
+                            <div style="color: var(--success-border); font-size: 13px; font-weight: 600;">
+                                <i class="fa-solid fa-arrow-trend-up"></i> +١٢٪
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Tabs & Segmented -->
+        <section id="tabs">
+            <h2>Tabs & Segmented Controls</h2>
+            
+            <div class="bilingual-grid">
+                <div class="lang-card ltr">
+                    <div class="tabs">
+                        <div class="tab active">Upcoming</div>
+                        <div class="tab">Past</div>
+                        <div class="tab">Canceled</div>
+                    </div>
+                    
+                    <div class="pills">
+                        <div class="pill active">Day</div>
+                        <div class="pill">Week</div>
+                        <div class="pill">Month</div>
+                    </div>
+                </div>
+                
+                <div class="lang-card rtl">
+                    <div class="tabs">
+                        <div class="tab active">القادمة</div>
+                        <div class="tab">السابقة</div>
+                        <div class="tab">الملغاة</div>
+                    </div>
+                    
+                    <div class="pills">
+                        <div class="pill active">يوم</div>
+                        <div class="pill">أسبوع</div>
+                        <div class="pill">شهر</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. Badges & Tags -->
+        <section id="badges">
+            <h2>Badges & Tags</h2>
+            <div class="card ltr mb-4">
+                <div class="card-body flex gap-4 flex-wrap items-center">
+                    <span class="badge badge-primary">New</span>
+                    <span class="badge badge-success"><i class="fa-solid fa-check"></i> Completed</span>
+                    <span class="badge badge-warning"><i class="fa-solid fa-clock"></i> Pending</span>
+                    <span class="badge badge-error">Failed</span>
+                    <span class="badge" style="background: var(--neutral-200); color: var(--neutral-700);">Draft</span>
+                    
+                    <div style="display:inline-flex; align-items:center; gap:6px; background:var(--white); border:1px solid var(--neutral-300); padding:4px 10px; border-radius:16px; font-size:12px;">
+                        Eye Care <i class="fa-solid fa-xmark" style="color: var(--neutral-500); cursor:pointer;"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. Alerts -->
+        <section id="alerts">
+            <h2>Alerts & Notifications</h2>
+            
+            <div class="bilingual-grid">
+                <div class="ltr">
+                    <div class="alert alert-info">
+                        <i class="fa-solid fa-circle-info alert-icon"></i>
+                        <div class="alert-content">
+                            <div class="alert-title">System Update</div>
+                            <div class="alert-desc">The system will be down for maintenance at 2 AM.</div>
+                        </div>
+                        <button class="alert-close"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="alert alert-success">
+                        <i class="fa-solid fa-circle-check alert-icon"></i>
+                        <div class="alert-content">
+                            <div class="alert-title">Payment Successful</div>
+                            <div class="alert-desc">Your invoice #1024 has been paid.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="rtl">
+                    <div class="alert alert-warning">
+                        <i class="fa-solid fa-triangle-exclamation alert-icon"></i>
+                        <div class="alert-content">
+                            <div class="alert-title">تنبيه بالرصيد</div>
+                            <div class="alert-desc">رصيدك الحالي أقل من الحد المسموح به.</div>
+                        </div>
+                        <button class="alert-close"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="alert alert-error">
+                        <i class="fa-solid fa-circle-xmark alert-icon"></i>
+                        <div class="alert-content">
+                            <div class="alert-title">فشل في الاتصال</div>
+                            <div class="alert-desc">يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. Tables -->
+        <section id="tables">
+            <h2>Tables</h2>
+            
+            <div class="table-wrapper ltr mb-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500; color: var(--neutral-900);">Sarah Connor</div>
+                                <div style="font-size: 12px; color: var(--neutral-500);">#PT-8234</div>
+                            </td>
+                            <td>12 Apr 2025</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                            <td><button class="btn btn-ghost btn-sm">View</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500; color: var(--neutral-900);">John Doe</div>
+                                <div style="font-size: 12px; color: var(--neutral-500);">#PT-8235</div>
+                            </td>
+                            <td>14 Apr 2025</td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td><button class="btn btn-ghost btn-sm">View</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-wrapper rtl">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اسم المريض</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                            <th>الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500; color: var(--neutral-900);">سارة محمد</div>
+                                <div style="font-size: 12px; color: var(--neutral-500);">#PT-8234</div>
+                            </td>
+                            <td>١٢ أبريل ٢٠٢٥</td>
+                            <td><span class="badge badge-success">مكتمل</span></td>
+                            <td><button class="btn btn-ghost btn-sm">عرض</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 12. Wizard & Checkboxes -->
+        <section id="wizard">
+            <h2>Wizard & Form Controls</h2>
+            
+            <div class="bilingual-grid">
+                <div class="lang-card ltr">
+                    <div class="wizard">
+                        <div class="wizard-step completed">
+                            <div class="step-circle"><i class="fa-solid fa-check"></i></div>
+                            <div class="step-label">Details</div>
+                        </div>
+                        <div class="wizard-step active">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Payment</div>
+                        </div>
+                        <div class="wizard-step">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Confirm</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="check-wrap">
+                            <input type="checkbox" checked>
+                            <span class="check-label">I agree to terms and conditions</span>
+                        </label>
+                        <label class="check-wrap">
+                            <input type="radio" name="r1" checked>
+                            <span class="check-label">Credit Card</span>
+                        </label>
+                        <label class="check-wrap">
+                            <input type="radio" name="r1">
+                            <span class="check-label">Cash</span>
+                        </label>
+                        
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="check-label" style="font-weight: 500;">Email Notifications</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lang-card rtl">
+                    <div class="wizard">
+                        <div class="wizard-step completed">
+                            <div class="step-circle"><i class="fa-solid fa-check"></i></div>
+                            <div class="step-label">التفاصيل</div>
+                        </div>
+                        <div class="wizard-step active">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">الدفع</div>
+                        </div>
+                        <div class="wizard-step">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">التأكيد</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="check-wrap">
+                            <input type="checkbox" checked>
+                            <span class="check-label">أوافق على الشروط والأحكام</span>
+                        </label>
+                        <label class="check-wrap">
+                            <input type="radio" name="r2" checked>
+                            <span class="check-label">بطاقة ائتمان</span>
+                        </label>
+                        <label class="check-wrap">
+                            <input type="radio" name="r2">
+                            <span class="check-label">نقداً</span>
+                        </label>
+
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="check-label" style="font-weight: 500;">إشعارات البريد الإلكتروني</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 13. Empty States & Progress -->
+        <section id="empty">
+            <h2>Empty States & Loaders</h2>
+            
+            <div class="bilingual-grid">
+                <div class="ltr">
+                    <div class="empty-state mb-4">
+                        <i class="fa-regular fa-folder-open empty-icon"></i>
+                        <h3 style="margin-top:0;">No Appointments Found</h3>
+                        <p>You don't have any upcoming appointments scheduled.</p>
+                        <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Book Now</button>
+                    </div>
+                    
+                    <div class="card card-body">
+                        <div style="font-size: 14px; font-weight: 500; margin-bottom: 8px; display: flex; justify-content: space-between;">
+                            <span>Profile Completion</span>
+                            <span>75%</span>
+                        </div>
+                        <div class="progress-bg">
+                            <div class="progress-bar" style="width: 75%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rtl">
+                    <div class="empty-state mb-4">
+                        <i class="fa-regular fa-folder-open empty-icon"></i>
+                        <h3 style="margin-top:0;">لا توجد مواعيد</h3>
+                        <p>ليس لديك أي مواعيد قادمة مجدولة حالياً.</p>
+                        <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> حجز موعد</button>
+                    </div>
+
+                    <div class="card card-body">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="skeleton" style="width: 48px; height: 48px; border-radius: 50%;"></div>
+                            <div style="flex:1;">
+                                <div class="skeleton mb-2" style="height: 14px; width: 60%;"></div>
+                                <div class="skeleton" style="height: 10px; width: 40%;"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center mt-4">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 14. App Previews -->
+        <section id="preview">
+            <h2>Mobile App Previews</h2>
+            <p class="ltr">Example application layouts using the design system components.</p>
+            
+            <div class="flex flex-wrap gap-4 justify-center mt-4">
+                
+                <!-- Mockup 1: LTR Dashboard -->
+                <div class="mockup ltr">
+                    <div class="mockup-header">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <div style="font-size: 12px; opacity: 0.8;">Good Morning,</div>
+                                <div style="font-size: 18px; font-weight: 600;">Ahmed Khalid</div>
+                            </div>
+                            <img src="https://ui-avatars.com/api/?name=Ahmed&background=BCE6FF&color=015C92" style="width: 40px; border-radius: 50%; border: 2px solid white;">
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span style="font-size: 13px; opacity: 0.8;">Search doctors, clinics...</span>
+                        </div>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 style="margin:0; font-size: 15px;">Upcoming</h4>
+                            <a href="#" style="font-size: 12px; color: var(--primary-700); text-decoration: none; font-weight: 500;">See All</a>
+                        </div>
+                        
+                        <div class="card mb-4" style="box-shadow: var(--shadow-sm);">
+                            <div class="card-body" style="padding: 16px;">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="icon-box icon-box-primary" style="width: 40px; height: 40px;"><i class="fa-solid fa-tooth"></i></div>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 14px;">Dental Checkup</div>
+                                        <div style="font-size: 12px; color: var(--neutral-500);">Dr. Sarah Jenkins</div>
+                                    </div>
+                                </div>
+                                <div style="background: var(--neutral-50); padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; font-size: 12px; color: var(--neutral-600);">
+                                    <span><i class="fa-regular fa-calendar" style="color: var(--primary-500);"></i> Today</span>
+                                    <span><i class="fa-regular fa-clock" style="color: var(--primary-500);"></i> 14:00 PM</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 style="margin:0; font-size: 15px; margin-bottom: 12px;">Categories</h4>
+                        <div class="grid-2">
+                            <div style="background: white; border: 1px solid var(--neutral-200); border-radius: 12px; padding: 16px; text-align: center;">
+                                <i class="fa-solid fa-eye" style="color: var(--primary-500); font-size: 24px; margin-bottom: 8px;"></i>
+                                <div style="font-size: 12px; font-weight: 500;">Eye Care</div>
+                            </div>
+                            <div style="background: white; border: 1px solid var(--neutral-200); border-radius: 12px; padding: 16px; text-align: center;">
+                                <i class="fa-solid fa-heart-pulse" style="color: var(--error-border); font-size: 24px; margin-bottom: 8px;"></i>
+                                <div style="font-size: 12px; font-weight: 500;">Cardiology</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mockup-bottom">
+                        <div class="mockup-nav-item active">
+                            <i class="fa-solid fa-house" style="font-size: 18px;"></i>
+                            <span>Home</span>
+                        </div>
+                        <div class="mockup-nav-item">
+                            <i class="fa-regular fa-calendar" style="font-size: 18px;"></i>
+                            <span>Schedule</span>
+                        </div>
+                        <div class="mockup-nav-item">
+                            <i class="fa-regular fa-file-lines" style="font-size: 18px;"></i>
+                            <span>Reports</span>
+                        </div>
+                        <div class="mockup-nav-item">
+                            <i class="fa-regular fa-user" style="font-size: 18px;"></i>
+                            <span>Profile</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mockup 2: RTL Form -->
+                <div class="mockup rtl">
+                    <div style="background: white; border-bottom: 1px solid var(--neutral-200); padding: 40px 20px 16px; text-align: center; font-weight: 600;">
+                        تحديث الملف الشخصي
+                    </div>
+                    <div class="mockup-body" style="height: calc(100% - 77px); background: white;">
+                        <div class="flex justify-center mb-4">
+                            <div style="position: relative;">
+                                <img src="https://ui-avatars.com/api/?name=Ahmed&background=BCE6FF&color=015C92" style="width: 80px; border-radius: 50%;">
+                                <div style="position: absolute; bottom: 0; right: 0; background: var(--primary-500); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid white;">
+                                    <i class="fa-solid fa-camera"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">الاسم الكامل</label>
+                            <input type="text" class="form-control" value="أحمد خالد">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">رقم الهاتف</label>
+                            <div class="form-control-wrapper">
+                                <i class="fa-solid fa-phone input-icon input-icon-right"></i>
+                                <input type="tel" class="form-control has-icon-right" value="+966 50 123 4567" style="text-align: left; direction: ltr;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">البريد الإلكتروني</label>
+                            <input type="email" class="form-control" value="ahmed@example.com">
+                        </div>
+
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 16px;">حفظ التغييرات</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        
+        <footer style="margin-top: 64px; border-top: 1px solid var(--neutral-200); padding-top: 24px; color: var(--neutral-500); font-size: 13px;" class="ltr">
+            <h4 style="color: var(--neutral-900);">Design System Rules</h4>
+            <ul style="padding-left: 20px; margin-bottom: 16px;">
+                <li><strong>Radius:</strong> Keep components rounded with var(--radius-md) 10px or var(--radius-lg) 14px.</li>
+                <li><strong>Shadows:</strong> Only use soft, large spread shadows to keep it premium and modern. Avoid harsh dark shadows.</li>
+                <li><strong>Direction:</strong> Arabic layouts are strictly RTL utilizing Cairo font. Icons in buttons always precede text logically based on layout flow.</li>
+                <li><strong>Palette:</strong> Stick rigidly to the 5 shades of blue provided for primary branding. Use Red/Green/Yellow only for semantic status alerts.</li>
+            </ul>
+        </footer>
+
+    </main>
+
+    <script>
+        // Smooth scrolling for sidebar links
+        document.querySelectorAll('.sidebar-nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                
+                // Update active state
+                document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Set first link active by default
+        document.querySelector('.sidebar-nav a').classList.add('active');
+
+        // Download AI Skill Markdown
+        document.getElementById('downloadSkillBtn').addEventListener('click', function() {
+            const mdContent = `---
+name: "alsaif-medical-design-system"
+description: "AI Skill for building UI with the Alsaif Medical Design System"
+---
+
+# Alsaif Medical Design System Guidelines
+
+You are an expert UI/UX Engineer. When generating or modifying UI code (Flutter, Web, etc.) for Alsaif Medical Center, you MUST strictly adhere to the following design system rules:
+
+## 1. Color Palette
+Use ONLY the following primary brand colors:
+- **Darkest Blue**: \`#015C92\` (Use for primary text, active states, deep backgrounds)
+- **Dark Blue**: \`#2D82B5\` (Use for hover states, secondary elements)
+- **Primary Brand**: \`#53A7D8\` (Use for primary buttons, active tabs, main accents)
+- **Light Blue**: \`#88CDF6\` (Use for soft highlights, disabled states)
+- **Lightest (Surface)**: \`#BCE6FF\` (Use for very light backgrounds, secondary button backgrounds)
+
+Semantic Colors:
+- **Success**: \`#22C55E\` (Background: \`#DCFCE7\`)
+- **Error/Danger**: \`#EF4444\` (Background: \`#FEE2E2\`)
+- **Warning**: \`#EAB308\` (Background: \`#FEF9C3\`)
+- **Info**: \`#3B82F6\` (Background: \`#DBEAFE\`)
+- **Neutrals**: White \`#FFFFFF\`, Light Grays \`#F8FAFC\`, \`#E2E8F0\`, Dark text \`#1E293B\`
+
+## 2. Typography
+- **English (LTR)**: \`Poppins\`
+- **Arabic (RTL)**: \`Cairo\`
+- **Hierarchy**:
+  - H1: 36px Bold
+  - H2: 30px Bold
+  - H3: 24px Semibold
+  - H4: 20px Medium
+  - Body Large: 16px Regular
+  - Body Normal: 14px Regular
+  - Caption: 12px Regular
+
+## 3. Bilingual & RTL Rules
+- The UI MUST support both Arabic (RTL) and English (LTR).
+- **Icon Placement Rule**: Icons MUST ALWAYS be logically placed before the text depending on the reading direction.
+  - In LTR (English), the icon is on the Left of the text.
+  - In RTL (Arabic), the icon is on the Right of the text.
+  - Always leave an 8px spacing gap between the icon and text.
+
+## 4. UI Components & Shapes
+- **Corner Radius**: Use soft, modern rounded corners. 
+  - Standard components (buttons, inputs): \`8px\` to \`10px\`
+  - Large containers (cards, modals): \`14px\` to \`24px\`
+- **Shadows**: Use clean, subtle elevation shadows. Avoid harsh black shadows.
+- **Borders**: Inputs and cards should have light borders (e.g. \`#E2E8F0\`) and white backgrounds.
+- **Buttons**:
+  - Primary buttons use the Primary Brand color (\`#53A7D8\`) with white text.
+  - Apply scale-down animation on click.
+
+## 5. Spacing & Layout
+- Maintain generous whitespace and padding (e.g., 24px padding inside cards).
+- Use flexbox or grid layouts heavily for clean alignment.
+- Never use placeholder generic colors outside the approved palette.
+
+## 6. Icons
+- Standardize on FontAwesome 6 (Solid/Regular) or Phosphor Icons.
+- Keep icon sizes consistent (typically 16px to 24px).
+
+Follow these rules unconditionally to guarantee a premium, professional, and accessible UI.
+`;
+
+            const blob = new Blob([mdContent], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'alsaif_design_system_skill.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>

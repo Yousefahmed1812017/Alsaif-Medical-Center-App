@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 
+import '../../core/models/user_model.dart';
+import '../../core/services/auth_service.dart';
 import '../../features/auth/presentation/internal_login/internal_login_screen.dart';
 import '../../features/auth/presentation/internal_login/internal_otp_verification_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
@@ -140,14 +142,32 @@ class AppRouter {
   );
 
   static String _getInitialLocation() {
-    // Language selection is always shown first so the user picks their language.
-    // After that we check onboarding, then go to user-type.
+    // 1. Language selection first
     if (StorageService.selectedLanguage == null) {
       return '/language-selection';
     }
+
+    // 2. Onboarding
     if (!StorageService.isOnboardingCompleted) {
       return '/onboarding';
     }
+
+    // 3. ── Persistent Session ──────────────────────────────────────────
+    // If a saved user profile exists, skip login and go straight to dashboard.
+    final savedProfile = StorageService.userProfile;
+    if (savedProfile != null) {
+      try {
+        final user = UserModel.fromJsonString(savedProfile);
+        // Restore into AuthService in-memory cache
+        AuthService.restoreSession(user);
+        return '/internal-dashboard/${user.roleKey}';
+      } catch (_) {
+        // Corrupt data — clear and fall through to login
+        StorageService.clearSession();
+      }
+    }
+
+    // 4. Fresh login
     return '/user-type';
   }
 }

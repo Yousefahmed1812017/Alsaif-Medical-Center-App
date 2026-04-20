@@ -255,23 +255,35 @@ class _ScheduleAndTimePickerState extends State<ScheduleAndTimePicker> {
                   )
                 else
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
-                    child: Wrap(
-                      spacing: AppSpacing.s12,
-                      runSpacing: AppSpacing.s12,
-                      children: _slots.map((slot) {
-                        final isSelected = _selectedSlot?.time == slot.time;
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.s20),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: AppSpacing.s10,
+                        mainAxisSpacing: AppSpacing.s10,
+                        childAspectRatio: 3.0,
+                      ),
+                      itemCount: _slots.length,
+                      itemBuilder: (context, index) {
+                        final slot = _slots[index];
+                        final isSelected =
+                            _selectedSlot?.time == slot.time;
                         return _TimeChip(
                           slot: slot,
                           isSelected: isSelected,
                           isArabic: widget.isArabic,
                           onTap: slot.isAvailable
                               ? () {
-                                  setState(() => _selectedSlot = slot);
+                                  setState(
+                                      () => _selectedSlot = slot);
                                 }
                               : null,
                         );
-                      }).toList(),
+                      },
                     ),
                   ),
               ],
@@ -389,39 +401,59 @@ class _TimeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isAvailable = slot.isAvailable;
-    
-    // Style when not available
-    Color bgColor = Colors.white;
-    Color textColor = AppColors.headingText;
-    Color borderColor = AppColors.border;
 
-    if (!isAvailable) {
-      bgColor = AppColors.surfaceAlt;
-      textColor = AppColors.mutedText;
-      borderColor = AppColors.border;
-    } else if (isSelected) {
-      bgColor = const Color(0xFF00155C);
-      textColor = Colors.white;
-      borderColor = const Color(0xFF00155C);
-    }
+    // Style matching the admin panel screenshot
+    const Color navyBlue = Color(0xFF00155C);
+
+    final Color bgColor = isSelected
+        ? navyBlue
+        : isAvailable
+            ? Colors.white
+            : const Color(0xFFF5F5F5);
+
+    final Color textColor = isSelected
+        ? Colors.white
+        : isAvailable
+            ? AppColors.headingText
+            : AppColors.mutedText;
+
+    final Color borderColor = isSelected
+        ? navyBlue
+        : isAvailable
+            ? AppColors.border
+            : AppColors.border;
 
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s20, vertical: AppSpacing.s12),
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(AppRadius.r12),
           border: Border.all(color: borderColor, width: 1.5),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: navyBlue.withAlpha(60),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
         ),
-        child: Text(
-          slot.displayTime(isArabic: isArabic),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: textColor,
-                decoration: !isAvailable ? TextDecoration.lineThrough : null,
-              ),
+        child: Center(
+          child: Text(
+            slot.displayTime(isArabic: isArabic),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight:
+                      isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: textColor,
+                  decoration: !isAvailable
+                      ? TextDecoration.lineThrough
+                      : null,
+                  decorationColor: AppColors.mutedText,
+                ),
+          ),
         ),
       ),
     );

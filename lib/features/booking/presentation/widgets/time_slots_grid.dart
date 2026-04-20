@@ -206,11 +206,11 @@ class _TimeSlotsGridState extends State<TimeSlotsGrid> {
                           )
                         : GridView.builder(
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: AppSpacing.s12,
-                              mainAxisSpacing: AppSpacing.s12,
-                              childAspectRatio: 2.2,
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: _crossAxisCount(context),
+                              crossAxisSpacing: AppSpacing.s10,
+                              mainAxisSpacing: AppSpacing.s10,
+                              childAspectRatio: 1.1,
                             ),
                             itemCount: _slots.length,
                             itemBuilder: (context, index) {
@@ -228,6 +228,14 @@ class _TimeSlotsGridState extends State<TimeSlotsGrid> {
         ],
       ),
     );
+  }
+
+  /// Dynamic grid columns based on screen width
+  int _crossAxisCount(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 600) return 5;
+    if (width >= 400) return 4;
+    return 3;
   }
 }
 
@@ -281,79 +289,113 @@ class _TimeSlotChip extends StatelessWidget {
   final bool isArabic;
   final VoidCallback? onTap;
 
+  /// Splits "09:00 AM" → ("09:00", "AM") or Arabic equivalent
+  (String, String) _splitTime(bool isArabic) {
+    final raw = isArabic ? slot.time12hrAr : slot.time12hr;
+    final parts = raw.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0], parts.sublist(1).join(' '));
+    }
+    return (raw, '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final isAvailable = slot.isAvailable;
+    final (timeStr, period) = _splitTime(isArabic);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.r12),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          decoration: BoxDecoration(
-            color: isAvailable
-                ? AppColors.primary500.withAlpha(15)
-                : AppColors.surfaceAlt,
-            borderRadius: BorderRadius.circular(AppRadius.r12),
-            border: Border.all(
-              color: isAvailable
-                  ? AppColors.primary500.withAlpha(60)
-                  : AppColors.border,
-              width: isAvailable ? 1.5 : 1,
-            ),
+    // Colors
+    final Color bg = isAvailable
+        ? AppColors.primary100
+        : const Color(0xFFF1F5F9);
+    final Color border = isAvailable
+        ? AppColors.primary500
+        : AppColors.border;
+    final Color timeColor = isAvailable
+        ? AppColors.primary900
+        : AppColors.mutedText;
+    final Color periodColor = isAvailable
+        ? AppColors.primary500
+        : AppColors.textSecondary;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: border,
+            width: isAvailable ? 1.5 : 1.0,
           ),
-          child: Center(
-            child: Column(
+          boxShadow: isAvailable
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary500.withAlpha(20),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Time number
+            Text(
+              timeStr,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                color: timeColor,
+                decoration: !isAvailable
+                    ? TextDecoration.lineThrough
+                    : null,
+                decorationColor: AppColors.mutedText,
+              ),
+            ),
+            const SizedBox(height: 3),
+            // AM / PM label
+            Text(
+              period,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: periodColor,
+              ),
+            ),
+            const SizedBox(height: 4),
+            // Status dot
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  slot.displayTime(isArabic: isArabic),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight:
-                            isAvailable ? FontWeight.w700 : FontWeight.w500,
-                        color: isAvailable
-                            ? AppColors.primary500
-                            : AppColors.mutedText,
-                        fontSize: 12,
-                        decoration: !isAvailable
-                            ? TextDecoration.lineThrough
-                            : null,
-                      ),
+                Container(
+                  width: 5,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: isAvailable
+                        ? AppColors.primary500
+                        : AppColors.mutedText,
+                    shape: BoxShape.circle,
+                  ),
                 ),
-                const SizedBox(height: 2),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: isAvailable
-                            ? AppColors.success
-                            : AppColors.error.withAlpha(150),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      isAvailable
-                          ? (isArabic ? 'متاح' : 'Open')
-                          : (isArabic ? 'محجوز' : 'Booked'),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 9,
-                            color: isAvailable
-                                ? AppColors.success
-                                : AppColors.mutedText,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                  ],
+                const SizedBox(width: 3),
+                Text(
+                  isAvailable
+                      ? (isArabic ? 'متاح' : 'Open')
+                      : (isArabic ? 'محجوز' : 'Taken'),
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                    color: isAvailable
+                        ? AppColors.primary500
+                        : AppColors.mutedText,
+                  ),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );

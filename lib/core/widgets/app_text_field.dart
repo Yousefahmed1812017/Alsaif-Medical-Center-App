@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 
 class AppTextField extends StatelessWidget {
@@ -56,16 +57,23 @@ class AppTextField extends StatelessWidget {
         labelText: labelText,
         prefixIcon: prefixIcon != null
             ? Padding(
-                padding: const EdgeInsets.only(
-                  left: AppSpacing.s16,
-                  right: AppSpacing.s8,
+                padding: const EdgeInsetsDirectional.only(start: 16, end: 12),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FaIcon(
+                      prefixIcon,
+                      size: 20,
+                      color: AppColors.textSecondary,
+                    ),
+                  ],
                 ),
-                child: FaIcon(prefixIcon, size: 18),
               )
             : null,
         prefixIconConstraints: const BoxConstraints(
-          minWidth: 44,
-          minHeight: 44,
+          minWidth: 48,
+          minHeight: 48,
         ),
         suffixIcon: suffixIcon,
       ),

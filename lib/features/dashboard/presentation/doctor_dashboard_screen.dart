@@ -7,6 +7,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_bottom_nav.dart';
+import '../../../../core/widgets/app_empty_state.dart';
 import '../../../../core/widgets/app_fab.dart';
 import 'widgets/activity_tile.dart';
 import 'widgets/dashboard_header.dart';
@@ -57,44 +58,6 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                       widget.user.specialtyNameEnglish != null)
                     const SizedBox(height: AppSpacing.s24),
 
-                  SectionHeader(title: isArabic ? 'نظرة عامة' : 'Overview'),
-                  const SizedBox(height: AppSpacing.s12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: StatCard(
-                          icon: FontAwesomeIcons.calendarDay,
-                          value: '12',
-                          label: isArabic ? 'مواعيد اليوم' : "Today's Appts",
-                          iconColor: AppColors.accentBlue,
-                          iconBgColor: AppColors.softBlue,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.s12),
-                      Expanded(
-                        child: StatCard(
-                          icon: FontAwesomeIcons.userInjured,
-                          value: '480',
-                          label: isArabic ? 'إجمالي المرضى' : 'Total Patients',
-                          iconColor: AppColors.primaryGreen,
-                          iconBgColor: AppColors.softGreen,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.s12),
-                      Expanded(
-                        child: StatCard(
-                          icon: FontAwesomeIcons.star,
-                          value: '4.9',
-                          label: isArabic ? 'التقييم' : 'Rating',
-                          iconColor: AppColors.warning,
-                          iconBgColor: AppColors.warningSoft,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: AppSpacing.s32),
-
                   SectionHeader(
                     title: isArabic ? 'إجراءات سريعة' : 'Quick Actions',
                   ),
@@ -102,37 +65,31 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                   QuickActionGrid(
                     actions: [
                       QuickActionTile(
-                        icon: FontAwesomeIcons.calendarXmark,
-                        label: isArabic ? 'إغلاق موعد' : 'Close Time',
-                        color: AppColors.accentBlue,
-                        bgColor: AppColors.softBlue,
-                        onTap: () => context.push('/close-time'),
-                      ),
-                      QuickActionTile(
-                        icon: FontAwesomeIcons.fileMedical,
-                        label: isArabic ? 'سجلات المرضى' : 'Patient Records',
-                        color: AppColors.primaryGreen,
-                        bgColor: AppColors.softGreen,
-                        onTap: () => context.push('/patients'),
-                      ),
-                      QuickActionTile(
-                        icon: FontAwesomeIcons.calendarPlus,
-                        label: isArabic ? 'حجز موعد' : 'Book Appointment',
-                        color: const Color(0xFF8B5CF6),
-                        bgColor: const Color(0xFFF3EEFF),
+                        icon: FontAwesomeIcons.calendarCheck,
+                        label: isArabic ? 'الحجوزات' : 'Bookings',
+                        color: AppColors.primary700,
+                        bgColor: AppColors.primary100,
                         onTap: () => context.push('/booking'),
                       ),
                       QuickActionTile(
-                        icon: FontAwesomeIcons.flask,
-                        label: isArabic ? 'نتائج المختبر' : 'Lab Results',
-                        color: AppColors.accentBlue,
-                        bgColor: AppColors.softBlue,
-                        onTap: () {},
+                        icon: FontAwesomeIcons.userInjured,
+                        label: isArabic ? 'المرضى' : 'Patients',
+                        color: AppColors.primary700,
+                        bgColor: AppColors.primary100,
+                        onTap: () => context.push('/patients'),
+                      ),
+                      QuickActionTile(
+                        icon: FontAwesomeIcons.calendarXmark,
+                        label: isArabic ? 'طلبات الإغلاق' : 'Close Requests',
+                        color: AppColors.primary700,
+                        bgColor: AppColors.primary100,
+                        onTap: () => context.push('/close-time'),
                       ),
                       QuickActionTile(
                         icon: FontAwesomeIcons.listCheck,
                         label: isArabic ? 'المهام' : 'Tasks',
-                        color: const Color(0xFF8B5CF6),
+                        color: AppColors.primary700,
+                        bgColor: AppColors.primary100,
                         onTap: () => context.push('/todo-tasks'),
                       ),
                     ],
@@ -143,34 +100,19 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                   SectionHeader(
                     title: isArabic ? 'مواعيد اليوم' : "Today's Schedule",
                     actionLabel: isArabic ? 'عرض الكل' : 'See All',
-                    onAction: () {},
+                    onAction: () => context.push('/booking'),
                   ),
                   const SizedBox(height: AppSpacing.s12),
-
-                  _ScheduleCard(
-                    patientName: isArabic ? 'أحمد محمد' : 'Ahmed Mohamed',
-                    time: '09:00 - 09:30',
-                    type: isArabic ? 'كشف أول' : 'First Visit',
-                    statusColor: AppColors.primaryGreen,
-                    statusText: isArabic ? 'مؤكد' : 'Confirmed',
-                  ),
-                  const SizedBox(height: AppSpacing.s8),
-                  _ScheduleCard(
-                    patientName: isArabic ? 'سارة العلي' : 'Sara Al-Ali',
-                    time: '09:30 - 10:00',
-                    type: isArabic ? 'متابعة' : 'Follow-up',
-                    statusColor: AppColors.accentBlue,
-                    statusText: isArabic ? 'قادم' : 'Upcoming',
-                  ),
-                  const SizedBox(height: AppSpacing.s8),
-                  _ScheduleCard(
-                    patientName: isArabic
-                        ? 'خالد الرشيدي'
-                        : 'Khalid Al-Rashidi',
-                    time: '10:00 - 10:30',
-                    type: isArabic ? 'استشارة' : 'Consultation',
-                    statusColor: AppColors.warning,
-                    statusText: isArabic ? 'في الانتظار' : 'Waiting',
+                  AppEmptyState(
+                    icon: FontAwesomeIcons.calendarXmark,
+                    title: isArabic
+                        ? 'لا توجد مواعيد اليوم'
+                        : 'No Appointments Today',
+                    message: isArabic
+                        ? 'يمكنك إضافة موعد جديد عبر زر الحجز'
+                        : 'You can add a new appointment via the booking button',
+                    actionText: isArabic ? 'حجز موعد' : 'Book Appointment',
+                    onActionPressed: () => context.push('/booking'),
                   ),
 
                   const SizedBox(height: AppSpacing.s32),
@@ -181,26 +123,14 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                     onAction: () {},
                   ),
                   const SizedBox(height: AppSpacing.s12),
-                  ActivityTile(
-                    icon: FontAwesomeIcons.fileMedical,
-                    title: isArabic ? 'تقرير مكتمل' : 'Report Completed',
-                    subtitle: isArabic
-                        ? 'تقرير المريض فيصل - جلدية'
-                        : 'Patient Faisal report - Dermatology',
-                    time: isArabic ? 'منذ 10 دقائق' : '10 min ago',
-                    iconColor: AppColors.primaryGreen,
-                    iconBgColor: AppColors.softGreen,
-                  ),
-                  const SizedBox(height: AppSpacing.s8),
-                  ActivityTile(
-                    icon: FontAwesomeIcons.prescription,
-                    title: isArabic ? 'وصفة طبية صادرة' : 'Prescription Issued',
-                    subtitle: isArabic
-                        ? 'للمريضة نورة - علاج أكزيما'
-                        : 'For patient Noura - Eczema treatment',
-                    time: isArabic ? 'منذ 25 دقيقة' : '25 min ago',
-                    iconColor: const Color(0xFF8B5CF6),
-                    iconBgColor: const Color(0xFFF3EEFF),
+                  AppEmptyState(
+                    icon: FontAwesomeIcons.clockRotateLeft,
+                    title: isArabic
+                        ? 'لا يوجد نشاط حديث'
+                        : 'No Recent Activity',
+                    message: isArabic
+                        ? 'ستظهر هنا آخر الإجراءات والأنشطة المسجلة'
+                        : 'Your latest actions and records will appear here',
                   ),
 
                   const SizedBox(height: AppSpacing.s24),
@@ -212,7 +142,12 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
       ),
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
+        isArabic: isArabic,
         onTap: (index) {
+          if (index == 4) {
+            context.push('/profile');
+            return;
+          }
           setState(() => _currentIndex = index);
         },
       ),
@@ -239,7 +174,7 @@ class _ClinicBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.s16),
       decoration: BoxDecoration(
-        color: AppColors.softGreen,
+        color: AppColors.primary100,
         borderRadius: BorderRadius.circular(AppRadius.r20),
       ),
       child: Row(
@@ -248,14 +183,14 @@ class _ClinicBanner extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: AppColors.primaryGreen.withAlpha(20),
+              color: AppColors.primary500.withAlpha(20),
               borderRadius: BorderRadius.circular(AppRadius.r12),
             ),
             child: const Center(
               child: FaIcon(
                 FontAwesomeIcons.hospital,
                 size: 18,
-                color: AppColors.primaryGreen,
+                color: AppColors.primary500,
               ),
             ),
           ),
@@ -269,7 +204,7 @@ class _ClinicBanner extends StatelessWidget {
                     clinicName,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: AppColors.greenDark,
+                      color: AppColors.primary900,
                     ),
                   ),
                 if (specialtyName.isNotEmpty) ...[
@@ -287,7 +222,7 @@ class _ClinicBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.primaryGreen,
+              color: AppColors.primary500,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -355,7 +290,7 @@ class _ScheduleCard extends StatelessWidget {
             width: 52,
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.softGreen,
+              color: AppColors.primary100,
               borderRadius: BorderRadius.circular(AppRadius.r12),
             ),
             child: Column(
@@ -364,7 +299,7 @@ class _ScheduleCard extends StatelessWidget {
                   time.split(' - ').first,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: AppColors.greenDark,
+                    color: AppColors.primary900,
                     fontSize: 12,
                   ),
                 ),

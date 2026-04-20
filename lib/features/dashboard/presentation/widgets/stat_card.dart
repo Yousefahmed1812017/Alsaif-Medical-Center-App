@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/app_card.dart';
 
 class StatCard extends StatelessWidget {
   const StatCard({
@@ -25,36 +26,24 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return AppCard(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.s16),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.r20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(5),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      padding: const EdgeInsets.all(AppSpacing.s16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
             Container(
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: iconBgColor ?? AppColors.softGreen,
+                color: iconBgColor ?? AppColors.primary100,
                 borderRadius: BorderRadius.circular(AppRadius.r12),
               ),
               child: Center(
                 child: FaIcon(
                   icon,
                   size: 16,
-                  color: iconColor ?? AppColors.primaryGreen,
+                  color: iconColor ?? AppColors.primary500,
                 ),
               ),
             ),
@@ -78,7 +67,7 @@ class StatCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }
+

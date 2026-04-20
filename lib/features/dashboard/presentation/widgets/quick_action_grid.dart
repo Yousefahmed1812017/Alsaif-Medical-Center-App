@@ -23,15 +23,15 @@ class QuickActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileColor = color ?? AppColors.primaryGreen;
+    final tileColor = color ?? AppColors.primary500;
     final tileBg = bgColor ?? tileColor.withAlpha(20);
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          vertical: AppSpacing.s16,
-          horizontal: AppSpacing.s8,
+          vertical: AppSpacing.s12,
+          horizontal: AppSpacing.s4,
         ),
         decoration: BoxDecoration(
           color: AppColors.surface,
@@ -46,22 +46,24 @@ class QuickActionTile extends StatelessWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 color: tileBg,
                 borderRadius: BorderRadius.circular(AppRadius.r16),
               ),
               child: Center(child: FaIcon(icon, size: 20, color: tileColor)),
             ),
-            const SizedBox(height: AppSpacing.s8),
+            const SizedBox(height: 6),
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
+                fontSize: 11,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -92,8 +94,9 @@ class QuickActionGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: AppSpacing.s12,
       mainAxisSpacing: AppSpacing.s12,
-      childAspectRatio: 0.82,
+      childAspectRatio: 0.78,
       children: actions,
     );
   }
 }
+

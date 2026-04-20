@@ -8,15 +8,17 @@ class AppCard extends StatelessWidget {
   const AppCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(AppSpacing.s20),
+    this.padding = const EdgeInsets.all(AppSpacing.s24),
     this.onTap,
-    this.radius = AppRadius.r20,
+    this.radius = AppRadius.r16,
+    this.color,
   });
 
   final Widget child;
   final EdgeInsetsGeometry padding;
   final VoidCallback? onTap;
   final double radius;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +34,21 @@ class AppCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: color ?? AppColors.surface,
         borderRadius: BorderRadius.circular(radius),
+        border: Border.all(color: AppColors.border, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(6),
-            blurRadius: 16,
+            color: Colors.black.withAlpha(12),
+            blurRadius: 6,
             offset: const Offset(0, 4),
-            spreadRadius: 0,
+            spreadRadius: -1,
+          ),
+          BoxShadow(
+            color: Colors.black.withAlpha(12),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+            spreadRadius: -2,
           ),
         ],
       ),

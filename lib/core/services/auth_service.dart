@@ -51,6 +51,12 @@ class AuthService {
   /// Whether the user currently has a stored profile.
   static bool get isLoggedIn => StorageService.userProfile != null;
 
+  /// Restores an already-loaded [UserModel] into the in-memory cache.
+  /// Called at startup when a saved profile is found in storage.
+  static void restoreSession(UserModel user) {
+    _currentUser = user;
+  }
+
   /// Clears stored session data (logout).
   static Future<void> logout() async {
     _currentUser = null;

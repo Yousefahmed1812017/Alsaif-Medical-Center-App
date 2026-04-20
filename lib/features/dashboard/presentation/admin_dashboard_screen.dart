@@ -53,7 +53,7 @@ class AdminDashboardScreen extends StatelessWidget {
                           value: '42',
                           label: isArabic ? 'إجمالي الموظفين' : 'Total Staff',
                           iconColor: AppColors.primary500,
-                          iconBgColor: AppColors.primary50,
+                          iconBgColor: AppColors.primary100,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.s12),

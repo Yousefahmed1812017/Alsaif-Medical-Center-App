@@ -9,10 +9,12 @@ class AppBottomNav extends StatelessWidget {
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.isArabic = false,
   });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class AppBottomNav extends StatelessWidget {
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.s8,
+            horizontal: AppSpacing.s4,
             vertical: AppSpacing.s8,
           ),
           child: Row(
@@ -38,27 +40,33 @@ class AppBottomNav extends StatelessWidget {
             children: [
               _NavItem(
                 icon: FontAwesomeIcons.house,
-                label: 'Home',
+                label: isArabic ? 'الرئيسية' : 'Home',
                 isActive: currentIndex == 0,
                 onTap: () => onTap(0),
               ),
               _NavItem(
-                icon: FontAwesomeIcons.calendarDays,
-                label: 'Schedule',
+                icon: FontAwesomeIcons.calendarCheck,
+                label: isArabic ? 'الحجوزات' : 'Bookings',
                 isActive: currentIndex == 1,
                 onTap: () => onTap(1),
               ),
               _NavItem(
-                icon: FontAwesomeIcons.users,
-                label: 'Patients',
+                icon: FontAwesomeIcons.listCheck,
+                label: isArabic ? 'المهام' : 'Tasks',
                 isActive: currentIndex == 2,
                 onTap: () => onTap(2),
               ),
               _NavItem(
-                icon: FontAwesomeIcons.user,
-                label: 'Profile',
+                icon: FontAwesomeIcons.bell,
+                label: isArabic ? 'الإشعارات' : 'Alerts',
                 isActive: currentIndex == 3,
                 onTap: () => onTap(3),
+              ),
+              _NavItem(
+                icon: FontAwesomeIcons.user,
+                label: isArabic ? 'حسابي' : 'Profile',
+                isActive: currentIndex == 4,
+                onTap: () => onTap(4),
               ),
             ],
           ),
@@ -83,7 +91,7 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? AppColors.primaryGreen : AppColors.mutedText;
+    final color = isActive ? AppColors.primary500 : AppColors.mutedText;
 
     return GestureDetector(
       onTap: onTap,
@@ -112,3 +120,4 @@ class _NavItem extends StatelessWidget {
     );
   }
 }
+

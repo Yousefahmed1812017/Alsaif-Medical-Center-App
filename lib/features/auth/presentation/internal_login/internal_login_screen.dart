@@ -78,8 +78,10 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
-      appBar: AppAppBar(
-        title: isArabic ? 'دخول الموظفين' : 'Staff Login',
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: const BackButton(),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -89,23 +91,41 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: AppSpacing.s16),
-                Text(
-                  isArabic ? 'بوابة الكادر الداخلي' : 'Internal Portal',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: AppColors.headingText,
+                Center(
+                  child: Container(
+                    width: 96,
+                    height: 96,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary500.withAlpha(40),
+                          blurRadius: 24,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(14),
+                    child: Image.asset(
+                      'assets/images/app_icon.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (ctx, err, stack) => const FaIcon(
+                        FontAwesomeIcons.hospital,
+                        color: AppColors.primary500,
+                        size: 52,
                       ),
-                  textAlign: TextAlign.start,
+                    ),
+                  ),
                 ),
-                const SizedBox(height: AppSpacing.s8),
+                const SizedBox(height: AppSpacing.s32),
                 Text(
-                  isArabic
-                      ? 'الرجاء إدخال البريد الإلكتروني وكلمة المرور الخاصة بك للوصول إلى النظام.'
-                      : 'Please enter your email and password to access the system.',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: AppColors.mutedText,
+                  isArabic ? 'تسجيل الدخول' : 'Login',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: AppColors.primary900,
+                        fontWeight: FontWeight.w800,
                       ),
-                  textAlign: TextAlign.start,
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.s48),
 
@@ -144,6 +164,27 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
                         _obscurePassword = !_obscurePassword;
                       });
                     },
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s8),
+                Align(
+                  alignment: isArabic ? Alignment.centerLeft : Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      // Navigate to forgot password screen
+                    },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      isArabic ? 'هل نسيت كلمة السر؟' : 'Forgot Password?',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.primary700,
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
                   ),
                 ),
 
@@ -189,6 +230,32 @@ class _InternalLoginScreenState extends State<InternalLoginScreen> {
                   onPressed: _onLogin,
                   isLoading: _isLoading,
                 ),
+
+                const SizedBox(height: AppSpacing.s48),
+                
+                // Powered by footer
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Powered by Win System',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: AppColors.mutedText,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.s4),
+                      Image.asset(
+                        'assets/images/LogoWinsystem.png',
+                        height: 24,
+                        fit: BoxFit.contain,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s16),
               ],
             ),
           ),

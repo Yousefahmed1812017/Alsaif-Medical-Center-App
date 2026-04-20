@@ -1,65 +1,55 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../main.dart';
 import '../../../core/services/storage_service.dart';
 
-// ─── Medical blue palette ────────────────────────────────────
-const Color kOb50  = Color(0xFFEFF3FF);
-const Color kOb200 = Color(0xFFBDD7E7);
-const Color kOb400 = Color(0xFF6BAED6);
-const Color kOb500 = Color(0xFF3182BD);
-const Color kOb700 = Color(0xFF08519C);
-const Color kObWhite   = Color(0xFFFFFFFF);
-const Color kObBody    = Color(0xFF3A4356);
-const Color kObMuted   = Color(0xFF8E9BAE);
-const Color kObGreen   = Color(0xFF22C55E);
-const Color kObSkin    = Color(0xFFFFD6B0);
-const Color kObHair    = Color(0xFF5D4037);
-const Color kObDark    = Color(0xFF3A4356);
-const Color kObRed     = Color(0xFFEF4444);
+// ─── Colors ──────────────────────────────────────────────────
+const Color kObWhite = Color(0xFFFFFFFF);
+const Color kObBody = Color(0xFF3A4356);
+const Color kObMuted = Color(0xFF8E9BAE);
+const Color kObPrimary = Color(0xFF3182BD);
 
-// ─── Data model ─────────────────────────────────────────────
+// ─── Data Model ──────────────────────────────────────────────
 class OnboardingModel {
   final String titleEn;
   final String titleAr;
   final String subtitleEn;
   final String subtitleAr;
-  final Widget Function() buildIllustration;
+  final String imagePath;
 
   const OnboardingModel({
     required this.titleEn,
     required this.titleAr,
     required this.subtitleEn,
     required this.subtitleAr,
-    required this.buildIllustration,
+    required this.imagePath,
   });
 }
 
 final List<OnboardingModel> kOnboardingSlides = [
-  OnboardingModel(
+  const OnboardingModel(
     titleEn: 'Book your appointment\neasily',
     titleAr: 'احجز موعدك\nبسهولة',
     subtitleEn: 'At Alsaif Medical Center',
     subtitleAr: 'في مجمع السيف الطبي',
-    buildIllustration: BookingIllustrationWidget.new,
+    imagePath: 'assets/images/Onboarding1.png',
   ),
-  OnboardingModel(
+  const OnboardingModel(
     titleEn: 'Manage your appointments\neasily',
     titleAr: 'تابع حجوزاتك\nبكل سهولة',
     subtitleEn: 'And stay organized',
     subtitleAr: 'ونظّم مواعيدك بدقة',
-    buildIllustration: ScheduleIllustrationWidget.new,
+    imagePath: 'assets/images/Onboarding2.png',
   ),
-  OnboardingModel(
+  const OnboardingModel(
     titleEn: 'All your medical services\nin one place',
     titleAr: 'كل خدماتك الطبية\nفي مكان واحد',
     subtitleEn: 'Eye Care · Dental · Dermatology',
-    subtitleAr: 'عيون - أسنان - جلدية',
-    buildIllustration: ServicesIllustrationWidget.new,
+    subtitleAr: 'عيون · أسنان · جلدية',
+    imagePath: 'assets/images/Onboarding3.png',
   ),
 ];
 
@@ -78,42 +68,32 @@ class OnboardingScreenState extends State<OnboardingScreen>
   final PageController pageCtrl = PageController();
   int currentIdx = 0;
 
-  late AnimationController fadeCtrl;
-  late AnimationController slideCtrl;
-  late Animation<double> fadeAnim;
-  late Animation<Offset> slideAnim;
+  late AnimationController screenFadeCtrl;
+  late Animation<double> screenFadeAnim;
 
   bool get isArabic => appLocaleNotifier.value.languageCode == 'ar';
 
   @override
   void initState() {
     super.initState();
-    fadeCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
-    slideCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 450));
-    fadeAnim = CurvedAnimation(parent: fadeCtrl, curve: Curves.easeOut);
-    slideAnim = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero)
-        .animate(CurvedAnimation(parent: slideCtrl, curve: Curves.easeOut));
-    runEntryAnimation();
-  }
+    // Screen fade-in
+    screenFadeCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 800));
+    screenFadeAnim =
+        CurvedAnimation(parent: screenFadeCtrl, curve: Curves.easeInOut);
 
-  void runEntryAnimation() {
-    fadeCtrl.forward(from: 0);
-    slideCtrl.forward(from: 0);
+    screenFadeCtrl.forward();
   }
 
   @override
   void dispose() {
     pageCtrl.dispose();
-    fadeCtrl.dispose();
-    slideCtrl.dispose();
+    screenFadeCtrl.dispose();
     super.dispose();
   }
 
   void onPageChanged(int index) {
     setState(() => currentIdx = index);
-    runEntryAnimation();
   }
 
   void onNext() {
@@ -125,67 +105,50 @@ class OnboardingScreenState extends State<OnboardingScreen>
     }
   }
 
+  void onPrevious() {
+    if (currentIdx > 0) {
+      pageCtrl.previousPage(
+          duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+    }
+  }
+
   void onSkip() => finish();
 
   Future<void> finish() async {
     await StorageService.setOnboardingCompleted();
     if (!mounted) return;
-    context.go('/language-selection');
-  }
-
-  void toggleLanguage() {
-    final next = isArabic ? 'en' : 'ar';
-    appLocaleNotifier.value = Locale(next);
-    StorageService.setSelectedLanguage(next);
-    setState(() {});
+    context.go('/user-type');
   }
 
   @override
   Widget build(BuildContext context) {
-    final slide = kOnboardingSlides[currentIdx];
     final isAr = isArabic;
 
     return Directionality(
       textDirection: isAr ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         backgroundColor: kObWhite,
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFF3F8FD),
-                Color(0xFFE0EDF9),
-                Color(0xFFF3F8FD),
-              ],
-              stops: [0.0, 0.5, 1.0],
-            ),
-          ),
+        body: FadeTransition(
+          opacity: screenFadeAnim,
           child: Stack(
             children: [
-              // Page view (illustrations fill top ~55%)
-              PageView.builder(
-                controller: pageCtrl,
-                onPageChanged: onPageChanged,
-                itemCount: kOnboardingSlides.length,
-                itemBuilder: (ctx, i) => _AnimatedIllustrationWrapper(
-                  key: ValueKey('illustration_$i'),
-                  child: kOnboardingSlides[i].buildIllustration(),
-                ),
+              // Animated Wave Background at the bottom
+              const Positioned.fill(
+                child: AnimatedWaveBackground(),
               ),
-              // Top bar: logo + language toggle + skip
+
+              // Main Content
               SafeArea(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Column(
-                    children: [
-                      Row(
+                child: Column(
+                  children: [
+                    // Top Bar
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          LanguageToggleButton(
-                              isArabic: isAr, onTap: toggleLanguage),
+                          _LanguageFlagIndicator(isArabic: isAr),
                           if (currentIdx < kOnboardingSlides.length - 1)
                             TextButton(
                               onPressed: onSkip,
@@ -198,33 +161,87 @@ class OnboardingScreenState extends State<OnboardingScreen>
                               ),
                               child: Text(isAr ? 'تخطي' : 'Skip',
                                   style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500)),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600)),
                             ),
                         ],
                       ),
-                      const SizedBox(height: 6),
-                      FadeTransition(
-                        opacity: fadeAnim,
-                        child: const _OnboardingLogo(),
+                    ),
+
+                    // Floating Image & Text Carousel
+                    Expanded(
+                      child: PageView.builder(
+                        controller: pageCtrl,
+                        onPageChanged: onPageChanged,
+                        itemCount: kOnboardingSlides.length,
+                        itemBuilder: (ctx, i) {
+                          return _OnboardingPage(
+                            slide: kOnboardingSlides[i],
+                            isAr: isAr,
+                            isActive: i == currentIdx,
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              // Bottom panel
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: BottomPanelWidget(
-                  slide: slide,
-                  isAr: isAr,
-                  currentIndex: currentIdx,
-                  totalSlides: kOnboardingSlides.length,
-                  fadeAnimation: fadeAnim,
-                  slideAnimation: slideAnim,
-                  onNext: onNext,
+                    ),
+
+                    // Bottom Navigation Panel
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+                      child: SlideUpTransition(
+                        delay: 400,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Previous Button or empty space
+                            currentIdx > 0
+                                ? NavButton(
+                                    label: isAr ? 'السابق' : 'Previous',
+                                    icon: isAr
+                                        ? Icons.arrow_forward_rounded
+                                        : Icons.arrow_back_rounded,
+                                    isPrimary: false,
+                                    onTap: onPrevious,
+                                  )
+                                : const SizedBox(width: 100), // Placeholder to keep center alignment
+
+                            // Page Indicators
+                            Row(
+                              children: List.generate(
+                                kOnboardingSlides.length,
+                                (i) => AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                                  width: currentIdx == i ? 24 : 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: currentIdx == i
+                                        ? kObPrimary
+                                        : kObMuted.withValues(alpha: 0.3),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            // Next / Get Started Button
+                            NavButton(
+                              label: currentIdx == kOnboardingSlides.length - 1
+                                  ? (isAr ? 'ابدأ' : 'Start')
+                                  : (isAr ? 'التالي' : 'Next'),
+                              icon: currentIdx == kOnboardingSlides.length - 1
+                                  ? Icons.check_circle_outline_rounded
+                                  : (isAr
+                                      ? Icons.arrow_back_rounded
+                                      : Icons.arrow_forward_rounded),
+                              isPrimary: true,
+                              onTap: onNext,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -236,35 +253,154 @@ class OnboardingScreenState extends State<OnboardingScreen>
 }
 
 // ════════════════════════════════════════════════════════════
-//  ANIMATED LOGO HEADER
+//  ONBOARDING PAGE CONTENT (Floating Image + Slide up text)
 // ════════════════════════════════════════════════════════════
-class _OnboardingLogo extends StatelessWidget {
-  const _OnboardingLogo();
+class _OnboardingPage extends StatelessWidget {
+  final OnboardingModel slide;
+  final bool isAr;
+  final bool isActive;
+
+  const _OnboardingPage({
+    required this.slide,
+    required this.isAr,
+    required this.isActive,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 64,
-      height: 64,
-      decoration: BoxDecoration(
-        color: kObWhite,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: kOb500.withValues(alpha: 0.18),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
+    // Only animate if it's the active page
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Floating Avatar Image
+          Expanded(
+            flex: 6,
+            child: FloatingImageWidget(
+              imagePath: slide.imagePath,
+              isActive: isActive,
+            ),
+          ),
+          const SizedBox(height: 32),
+          // Title (Slide Up)
+          Expanded(
+            flex: 4,
+            child: SlideUpTransition(
+              delay: isActive ? 100 : 0,
+              child: Column(
+                children: [
+                  Text(
+                    isAr ? slide.titleAr : slide.titleEn,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
+                      color: kObBody,
+                      height: 1.3,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Subtitle
+                  Text(
+                    isAr ? slide.subtitleAr : slide.subtitleEn,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: kObMuted,
+                      height: 1.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(10),
-      child: Image.asset(
-        'assets/images/logo.png',
-        fit: BoxFit.contain,
-        errorBuilder: (ctx, err, stack) => const FaIcon(
-          FontAwesomeIcons.hospital,
-          color: kOb500,
-          size: 32,
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  FLOATING IMAGE WIDGET
+// ════════════════════════════════════════════════════════════
+class FloatingImageWidget extends StatefulWidget {
+  final String imagePath;
+  final bool isActive;
+
+  const FloatingImageWidget({
+    super.key,
+    required this.imagePath,
+    required this.isActive,
+  });
+
+  @override
+  State<FloatingImageWidget> createState() => _FloatingImageWidgetState();
+}
+
+class _FloatingImageWidgetState extends State<FloatingImageWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    if (widget.isActive) {
+      _controller.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant FloatingImageWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive && !oldWidget.isActive) {
+      _controller.repeat(reverse: true);
+    } else if (!widget.isActive && oldWidget.isActive) {
+      _controller.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        // Slow up/down motion
+        final dy = 12.0 * math.sin(_controller.value * math.pi);
+        return Transform.translate(
+          offset: Offset(0, dy),
+          child: child,
+        );
+      },
+      child: Center(
+        child: Image.asset(
+          widget.imagePath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.broken_image_rounded, size: 48, color: kObMuted),
+                const SizedBox(height: 8),
+                Text('Image not found: \n${widget.imagePath}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 10, color: kObMuted),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -272,191 +408,215 @@ class _OnboardingLogo extends StatelessWidget {
 }
 
 // ════════════════════════════════════════════════════════════
-//  ILLUSTRATION ENTRY ANIMATION WRAPPER
+//  SLIDE UP TRANSITION WRAPPER
 // ════════════════════════════════════════════════════════════
-class _AnimatedIllustrationWrapper extends StatefulWidget {
-  const _AnimatedIllustrationWrapper({super.key, required this.child});
+class SlideUpTransition extends StatefulWidget {
   final Widget child;
+  final int delay; // in milliseconds
+
+  const SlideUpTransition({super.key, required this.child, this.delay = 0});
 
   @override
-  State<_AnimatedIllustrationWrapper> createState() =>
-      _AnimatedIllustrationWrapperState();
+  State<SlideUpTransition> createState() => _SlideUpTransitionState();
 }
 
-class _AnimatedIllustrationWrapperState
-    extends State<_AnimatedIllustrationWrapper>
+class _SlideUpTransitionState extends State<SlideUpTransition>
     with SingleTickerProviderStateMixin {
-  late AnimationController ctrl;
-  late Animation<double> fade;
-  late Animation<Offset> slide;
+  late AnimationController _controller;
+  late Animation<Offset> _slideAnim;
+  late Animation<double> _fadeAnim;
 
   @override
   void initState() {
     super.initState();
-    ctrl = AnimationController(
+    _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 650),
+      duration: const Duration(milliseconds: 600),
     );
-    fade = CurvedAnimation(parent: ctrl, curve: Curves.easeOut);
-    slide = Tween<Offset>(
-      begin: const Offset(0, 0.12),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeOutCubic));
-    ctrl.forward();
+
+    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _fadeAnim = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    if (widget.delay > 0) {
+      Future.delayed(Duration(milliseconds: widget.delay), () {
+        if (mounted) _controller.forward();
+      });
+    } else {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant SlideUpTransition oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // If the widget updates (e.g. page changed), re-trigger animation
+    _controller.forward(from: 0);
   }
 
   @override
   void dispose() {
-    ctrl.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
-      opacity: fade,
-      child: SlideTransition(position: slide, child: widget.child),
-    );
-  }
-}
-
-// ════════════════════════════════════════════════════════════
-//  BOTTOM PANEL
-// ════════════════════════════════════════════════════════════
-class BottomPanelWidget extends StatelessWidget {
-  const BottomPanelWidget({
-    super.key,
-    required this.slide,
-    required this.isAr,
-    required this.currentIndex,
-    required this.totalSlides,
-    required this.fadeAnimation,
-    required this.slideAnimation,
-    required this.onNext,
-  });
-
-  final OnboardingModel slide;
-  final bool isAr;
-  final int currentIndex;
-  final int totalSlides;
-  final Animation<double> fadeAnimation;
-  final Animation<Offset> slideAnimation;
-  final VoidCallback onNext;
-
-  @override
-  Widget build(BuildContext context) {
-    final isLast = currentIndex == totalSlides - 1;
-    return Container(
-      decoration: BoxDecoration(
-        color: kObWhite,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-        boxShadow: [
-          BoxShadow(
-            color: kOb500.withValues(alpha: 0.08),
-            blurRadius: 30,
-            offset: const Offset(0, -8),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.fromLTRB(32, 28, 32, 44),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Title
-          FadeTransition(
-            opacity: fadeAnimation,
-            child: SlideTransition(
-              position: slideAnimation,
-              child: Text(
-                isAr ? slide.titleAr : slide.titleEn,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                  color: kOb700,
-                  height: 1.35,
-                  letterSpacing: -0.3,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          // Subtitle
-          FadeTransition(
-            opacity: fadeAnimation,
-            child: SlideTransition(
-              position: slideAnimation,
-              child: Text(
-                isAr ? slide.subtitleAr : slide.subtitleEn,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 15,
-                  color: kObMuted,
-                  height: 1.5,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 28),
-          // Indicators + Button
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: List.generate(
-                  totalSlides,
-                  (i) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    margin: const EdgeInsets.only(right: 7),
-                    width: currentIndex == i ? 28 : 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      color: currentIndex == i ? kOb500 : kOb200,
-                    ),
-                  ),
-                ),
-              ),
-              NavButtonWidget(isLast: isLast, isAr: isAr, onTap: onNext),
-            ],
-          ),
-        ],
+      opacity: _fadeAnim,
+      child: SlideTransition(
+        position: _slideAnim,
+        child: widget.child,
       ),
     );
   }
 }
 
 // ════════════════════════════════════════════════════════════
-//  NAV BUTTON
+//  ANIMATED WAVE BACKGROUND
 // ════════════════════════════════════════════════════════════
-class NavButtonWidget extends StatefulWidget {
-  const NavButtonWidget({
-    super.key,
-    required this.isLast,
-    required this.isAr,
-    required this.onTap,
-  });
-
-  final bool isLast;
-  final bool isAr;
-  final VoidCallback onTap;
+class AnimatedWaveBackground extends StatefulWidget {
+  const AnimatedWaveBackground({super.key});
 
   @override
-  State<NavButtonWidget> createState() => NavButtonWidgetState();
+  State<AnimatedWaveBackground> createState() => _AnimatedWaveBackgroundState();
 }
 
-class NavButtonWidgetState extends State<NavButtonWidget>
+class _AnimatedWaveBackgroundState extends State<AnimatedWaveBackground>
     with SingleTickerProviderStateMixin {
-  late AnimationController scaleCtrl;
+  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    scaleCtrl = AnimationController(
+    _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 120),
-      lowerBound: 0.92,
+      duration: const Duration(seconds: 6),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return CustomPaint(
+          painter: WavePainter(_controller.value),
+        );
+      },
+    );
+  }
+}
+
+class WavePainter extends CustomPainter {
+  final double animationValue;
+
+  WavePainter(this.animationValue);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Soft gradient colors: light blue -> soft green
+    final gradient1 = LinearGradient(
+      colors: [
+        const Color(0xFFE3F2FD).withValues(alpha: 0.6), // Light Blue
+        const Color(0xFFE8F5E9).withValues(alpha: 0.5), // Soft Green
+      ],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+
+    final gradient2 = LinearGradient(
+      colors: [
+        const Color(0xFFBBDEFB).withValues(alpha: 0.5),
+        const Color(0xFFC8E6C9).withValues(alpha: 0.4),
+      ],
+      begin: Alignment.bottomLeft,
+      end: Alignment.topRight,
+    );
+
+    final paint1 = Paint()
+      ..shader = gradient1.createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..style = PaintingStyle.fill;
+
+    final paint2 = Paint()
+      ..shader = gradient2.createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..style = PaintingStyle.fill;
+
+    final path1 = Path();
+    final path2 = Path();
+
+    path1.moveTo(0, size.height);
+    path2.moveTo(0, size.height);
+
+    // Draw waves at the bottom (starts at 65% of screen height)
+    final baseHeight = size.height * 0.65;
+
+    for (double i = 0; i <= size.width; i++) {
+      path1.lineTo(
+        i,
+        baseHeight +
+            math.sin((i / size.width * 2 * math.pi) + (animationValue * 2 * math.pi)) *
+                20,
+      );
+      path2.lineTo(
+        i,
+        baseHeight +
+            20 +
+            math.cos((i / size.width * 2 * math.pi) + (animationValue * 2 * math.pi)) *
+                25,
+      );
+    }
+
+    path1.lineTo(size.width, size.height);
+    path2.lineTo(size.width, size.height);
+
+    canvas.drawPath(path2, paint2);
+    canvas.drawPath(path1, paint1);
+  }
+
+  @override
+  bool shouldRepaint(WavePainter oldDelegate) => true;
+}
+
+// ════════════════════════════════════════════════════════════
+//  NAVIGATION BUTTON
+// ════════════════════════════════════════════════════════════
+class NavButton extends StatefulWidget {
+  final String label;
+  final IconData icon;
+  final bool isPrimary;
+  final VoidCallback onTap;
+
+  const NavButton({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.isPrimary,
+    required this.onTap,
+  });
+
+  @override
+  State<NavButton> createState() => _NavButtonState();
+}
+
+class _NavButtonState extends State<NavButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _scaleCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _scaleCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+      lowerBound: 0.9,
       upperBound: 1.0,
       value: 1.0,
     );
@@ -464,53 +624,56 @@ class NavButtonWidgetState extends State<NavButtonWidget>
 
   @override
   void dispose() {
-    scaleCtrl.dispose();
+    _scaleCtrl.dispose();
     super.dispose();
   }
 
-  void handleTap() {
-    scaleCtrl.reverse().then((_) => scaleCtrl.forward());
+  void _handleTap() {
+    _scaleCtrl.reverse().then((_) => _scaleCtrl.forward());
     widget.onTap();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScaleTransition(
-      scale: scaleCtrl,
+      scale: _scaleCtrl,
       child: GestureDetector(
-        onTap: handleTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: widget.isLast ? 140 : 56,
-          height: 56,
+        onTap: _handleTap,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: kOb700,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: kOb700.withValues(alpha: 0.30),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
+            color: widget.isPrimary ? kObPrimary : Colors.transparent,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: widget.isPrimary
+                ? [
+                    BoxShadow(
+                      color: kObPrimary.withValues(alpha: 0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    )
+                  ]
+                : [],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                widget.icon,
+                size: 20,
+                color: widget.isPrimary ? kObWhite : kObBody,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                widget.label,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: widget.isPrimary ? kObWhite : kObBody,
+                ),
               ),
             ],
           ),
-          child: Center(
-            child: widget.isLast
-                ? Text(
-                    widget.isAr ? 'ابدأ الآن' : 'Get Started',
-                    style: const TextStyle(
-                        color: kObWhite,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700),
-                  )
-                : Icon(
-                    widget.isAr
-                        ? Icons.arrow_back_rounded
-                        : Icons.arrow_forward_rounded,
-                    color: kObWhite,
-                    size: 24,
-                  ),
-          ),
         ),
       ),
     );
@@ -518,832 +681,39 @@ class NavButtonWidgetState extends State<NavButtonWidget>
 }
 
 // ════════════════════════════════════════════════════════════
-//  LANGUAGE TOGGLE
+//  LANGUAGE FLAG INDICATOR
 // ════════════════════════════════════════════════════════════
-class LanguageToggleButton extends StatelessWidget {
-  const LanguageToggleButton(
-      {super.key, required this.isArabic, required this.onTap});
+class _LanguageFlagIndicator extends StatelessWidget {
+  const _LanguageFlagIndicator({required this.isArabic});
 
   final bool isArabic;
-  final VoidCallback onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: kOb50,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: kOb200, width: 1.2),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('🌐', style: TextStyle(fontSize: 14)),
-            const SizedBox(width: 6),
-            Text(
-              isArabic ? 'English' : 'عربي',
-              style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: kOb700),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ════════════════════════════════════════════════════════════
-//  ILLUSTRATION 1 — BOOKING
-// ════════════════════════════════════════════════════════════
-class BookingIllustrationWidget extends StatefulWidget {
-  const BookingIllustrationWidget({super.key});
-
-  @override
-  State<BookingIllustrationWidget> createState() =>
-      BookingIllustrationState();
-}
-
-class BookingIllustrationState extends State<BookingIllustrationWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController floatCtrl;
-  late Animation<double> floatAnim;
-
-  @override
-  void initState() {
-    super.initState();
-    floatCtrl =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 2200))
-          ..repeat(reverse: true);
-    floatAnim = Tween<double>(begin: -8, end: 8)
-        .animate(CurvedAnimation(parent: floatCtrl, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    floatCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final ih = size.height * 0.54;
-
-    return SizedBox(
-      height: ih,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned.fill(
-              child: CustomPaint(painter: GeoBgPainter(color: kOb50))),
-          // Soft blob
-          Positioned(
-            top: ih * 0.06,
-            left: size.width * 0.5 - 100,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: kOb500.withValues(alpha: 0.10),
-              ),
-            ),
-          ),
-          // Calendar card
-          AnimatedBuilder(
-            animation: floatAnim,
-            builder: (ctx, child) => Positioned(
-              top: ih * 0.12 + floatAnim.value * 0.5,
-              left: size.width * 0.06,
-              child: child!,
-            ),
-            child: const CalendarCardWidget(),
-          ),
-          // Doctor figure
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: AnimatedBuilder(
-              animation: floatAnim,
-              builder: (ctx, child) => Transform.translate(
-                offset: Offset(0, floatAnim.value * 0.4),
-                child: child,
-              ),
-              child: const Center(child: DoctorFigureWidget()),
-            ),
-          ),
-          // Time badge
-          AnimatedBuilder(
-            animation: floatAnim,
-            builder: (ctx, child) => Positioned(
-              top: ih * 0.20 - floatAnim.value * 0.6,
-              right: size.width * 0.06,
-              child: child!,
-            ),
-            child: const FloatingBadgeWidget(
-              icon: Icons.access_time_rounded,
-              label: '10:30 AM',
-              color: kOb400,
-            ),
-          ),
-          // Confirmed badge
-          AnimatedBuilder(
-            animation: floatAnim,
-            builder: (ctx, child) => Positioned(
-              top: ih * 0.52 + floatAnim.value * 0.3,
-              right: size.width * 0.08,
-              child: child!,
-            ),
-            child: const FloatingBadgeWidget(
-              icon: Icons.check_circle_outline_rounded,
-              label: 'Confirmed',
-              color: kObGreen,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ════════════════════════════════════════════════════════════
-//  ILLUSTRATION 2 — SCHEDULE
-// ════════════════════════════════════════════════════════════
-class ScheduleIllustrationWidget extends StatefulWidget {
-  const ScheduleIllustrationWidget({super.key});
-
-  @override
-  State<ScheduleIllustrationWidget> createState() =>
-      ScheduleIllustrationState();
-}
-
-class ScheduleIllustrationState extends State<ScheduleIllustrationWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController floatCtrl;
-  late Animation<double> floatAnim;
-
-  @override
-  void initState() {
-    super.initState();
-    floatCtrl =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 2600))
-          ..repeat(reverse: true);
-    floatAnim = Tween<double>(begin: -7, end: 7)
-        .animate(CurvedAnimation(parent: floatCtrl, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    floatCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final ih = size.height * 0.54;
-
-    return SizedBox(
-      height: ih,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned.fill(
-              child: CustomPaint(painter: GeoBgPainter(color: kOb200))),
-          // Arch
-          Positioned(
-            bottom: 0,
-            left: size.width * 0.15,
-            right: size.width * 0.15,
-            child: Container(
-              height: ih * 0.45,
-              decoration: BoxDecoration(
-                color: kOb400.withValues(alpha: 0.18),
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(999)),
-              ),
-            ),
-          ),
-          // Schedule board
-          AnimatedBuilder(
-            animation: floatAnim,
-            builder: (ctx, child) => Positioned(
-              top: ih * 0.10 + floatAnim.value * 0.4,
-              left: size.width * 0.04,
-              child: child!,
-            ),
-            child: const ScheduleBoardWidget(),
-          ),
-          // Doctor with clipboard
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: AnimatedBuilder(
-              animation: floatAnim,
-              builder: (ctx, child) => Transform.translate(
-                offset: Offset(0, floatAnim.value * 0.35),
-                child: child,
-              ),
-              child: const Center(child: DoctorClipboardWidget()),
-            ),
-          ),
-          // Next appointment badge
-          AnimatedBuilder(
-            animation: floatAnim,
-            builder: (ctx, child) => Positioned(
-              top: ih * 0.18 - floatAnim.value * 0.5,
-              right: size.width * 0.06,
-              child: child!,
-            ),
-            child: const FloatingBadgeWidget(
-              icon: Icons.calendar_month_rounded,
-              label: 'Thu, 10 Apr',
-              color: kOb500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ════════════════════════════════════════════════════════════
-//  ILLUSTRATION 3 — SERVICES
-// ════════════════════════════════════════════════════════════
-class ServicesIllustrationWidget extends StatefulWidget {
-  const ServicesIllustrationWidget({super.key});
-
-  @override
-  State<ServicesIllustrationWidget> createState() =>
-      ServicesIllustrationState();
-}
-
-class ServicesIllustrationState extends State<ServicesIllustrationWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController floatCtrl;
-  late Animation<double> floatAnim;
-
-  @override
-  void initState() {
-    super.initState();
-    floatCtrl =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 2400))
-          ..repeat(reverse: true);
-    floatAnim = Tween<double>(begin: -6, end: 6)
-        .animate(CurvedAnimation(parent: floatCtrl, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    floatCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final ih = size.height * 0.54;
-    final isAr = appLocaleNotifier.value.languageCode == 'ar';
-
-    return SizedBox(
-      height: ih,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned.fill(
-              child: CustomPaint(
-                  painter:
-                      GeoBgPainter(color: kOb700.withValues(alpha: 0.07)))),
-          // Blob
-          Positioned(
-            top: ih * 0.04,
-            left: size.width * 0.5 - 110,
-            child: Container(
-              width: 220,
-              height: 220,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: kOb500.withValues(alpha: 0.12),
-              ),
-            ),
-          ),
-          // Medical cross
-          Positioned(
-            top: ih * 0.14,
-            left: 0,
-            right: 0,
-            child: AnimatedBuilder(
-              animation: floatAnim,
-              builder: (ctx, child) => Transform.translate(
-                offset: Offset(0, floatAnim.value * 0.3),
-                child: child,
-              ),
-              child: const Center(child: MedicalCrossWidget()),
-            ),
-          ),
-          // Eye care card
-          AnimatedBuilder(
-            animation: floatAnim,
-            builder: (ctx, child) => Positioned(
-              top: ih * 0.38 + floatAnim.value * 0.5,
-              left: size.width * 0.04,
-              child: child!,
-            ),
-            child: SpecialtyCardWidget(
-              icon: Icons.remove_red_eye_outlined,
-              label: isAr ? 'عيون' : 'Eye Care',
-              color: kOb400,
-            ),
-          ),
-          // Dental card
-          AnimatedBuilder(
-            animation: floatAnim,
-            builder: (ctx, child) => Positioned(
-              top: ih * 0.26 - floatAnim.value * 0.4,
-              left: size.width * 0.33,
-              child: child!,
-            ),
-            child: SpecialtyCardWidget(
-              icon: Icons.medical_services_outlined,
-              label: isAr ? 'أسنان' : 'Dental',
-              color: kObGreen,
-            ),
-          ),
-          // Dermatology card
-          AnimatedBuilder(
-            animation: floatAnim,
-            builder: (ctx, child) => Positioned(
-              top: ih * 0.38 + floatAnim.value * 0.5,
-              right: size.width * 0.04,
-              child: child!,
-            ),
-            child: SpecialtyCardWidget(
-              icon: Icons.spa_outlined,
-              label: isAr ? 'جلدية' : 'Dermatology',
-              color: kOb500,
-            ),
-          ),
-          // Clinic building
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: AnimatedBuilder(
-              animation: floatAnim,
-              builder: (ctx, child) => Transform.translate(
-                offset: Offset(0, floatAnim.value * 0.3),
-                child: child,
-              ),
-              child: const Center(child: ClinicBuildingWidget()),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ════════════════════════════════════════════════════════════
-//  REUSABLE WIDGETS
-// ════════════════════════════════════════════════════════════
-
-class DoctorFigureWidget extends StatelessWidget {
-  const DoctorFigureWidget({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const SizedBox(width: 180, height: 260, child: CustomPaint(painter: DoctorPainter()));
-}
-
-class DoctorClipboardWidget extends StatelessWidget {
-  const DoctorClipboardWidget({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const SizedBox(width: 170, height: 250, child: CustomPaint(painter: DoctorClipboardPainter()));
-}
-
-class MedicalCrossWidget extends StatelessWidget {
-  const MedicalCrossWidget({super.key});
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 88,
-      height: 88,
-      decoration:
-          BoxDecoration(color: kOb500, borderRadius: BorderRadius.circular(20)),
-      child: const Icon(Icons.add_rounded, color: kObWhite, size: 54),
-    );
-  }
-}
-
-class ClinicBuildingWidget extends StatelessWidget {
-  const ClinicBuildingWidget({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const SizedBox(width: 200, height: 180, child: CustomPaint(painter: ClinicBuildingPainter()));
-}
-
-class CalendarCardWidget extends StatelessWidget {
-  const CalendarCardWidget({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 112,
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: kObWhite,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-              color: kOb500.withValues(alpha: 0.15),
-              blurRadius: 18,
-              offset: const Offset(0, 6)),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: 28,
-            decoration: BoxDecoration(
-                color: kOb500, borderRadius: BorderRadius.circular(8)),
-            child: const Center(
-              child: Text('April 2025',
-                  style: TextStyle(
-                      color: kObWhite, fontSize: 10, fontWeight: FontWeight.w700)),
-            ),
-          ),
-          const SizedBox(height: 8),
-          const CalendarGridWidget(),
-        ],
-      ),
-    );
-  }
-}
-
-class CalendarGridWidget extends StatelessWidget {
-  const CalendarGridWidget({super.key});
-  static const List<int> highlighted = [9, 14, 21];
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 3,
-      runSpacing: 3,
-      children: List.generate(28, (i) {
-        final day = i + 1;
-        final hl = highlighted.contains(day);
-        return Container(
-          width: 14,
-          height: 14,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: hl ? kOb500 : kOb50,
-          ),
-          child: Center(
-            child: Text(
-              '$day',
-              style: TextStyle(
-                fontSize: 7,
-                color: hl ? kObWhite : kObBody,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        );
-      }),
-    );
-  }
-}
-
-class FloatingBadgeWidget extends StatelessWidget {
-  const FloatingBadgeWidget(
-      {super.key, required this.icon, required this.label, required this.color});
-  final IconData icon;
-  final String label;
-  final Color color;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      decoration: BoxDecoration(
-        color: kObWhite,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-              color: color.withValues(alpha: 0.20),
-              blurRadius: 14,
-              offset: const Offset(0, 4)),
-        ],
+        color: kObWhite.withValues(alpha: 0.8),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: kObMuted.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: 5),
-          Text(label,
-              style: TextStyle(
-                  fontSize: 11, fontWeight: FontWeight.w700, color: color)),
-        ],
-      ),
-    );
-  }
-}
-
-class ScheduleBoardWidget extends StatelessWidget {
-  const ScheduleBoardWidget({super.key});
-  @override
-  Widget build(BuildContext context) {
-    final slots = [
-      {'time': '08:00', 'name': 'Ahmed K.', 'color': kOb400},
-      {'time': '10:30', 'name': 'Sara M.', 'color': kObGreen},
-      {'time': '12:00', 'name': 'Omar H.', 'color': kOb200},
-    ];
-    return Container(
-      width: 116,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: kObWhite,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-              color: kOb500.withValues(alpha: 0.14),
-              blurRadius: 18,
-              offset: const Offset(0, 5)),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: slots.map((s) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              children: [
-                Container(
-                  width: 4,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: s['color'] as Color,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(width: 7),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(s['time'] as String,
-                        style: const TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
-                            color: kOb700)),
-                    Text(s['name'] as String,
-                        style: const TextStyle(fontSize: 9, color: kObMuted)),
-                  ],
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class SpecialtyCardWidget extends StatelessWidget {
-  const SpecialtyCardWidget(
-      {super.key, required this.icon, required this.label, required this.color});
-  final IconData icon;
-  final String label;
-  final Color color;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: kObWhite,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-              color: color.withValues(alpha: 0.18),
-              blurRadius: 16,
-              offset: const Offset(0, 5)),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, size: 22, color: color),
+          Text(
+            isArabic ? '🇸🇦' : '🇺🇸',
+            style: const TextStyle(fontSize: 18),
           ),
-          const SizedBox(height: 6),
-          Text(label,
-              style: const TextStyle(
-                  fontSize: 10, fontWeight: FontWeight.w700, color: kObBody)),
+          const SizedBox(width: 6),
+          Text(
+            isArabic ? 'العربية' : 'English',
+            style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: kObBody),
+          ),
         ],
       ),
     );
   }
-}
-
-// ════════════════════════════════════════════════════════════
-//  CUSTOM PAINTERS
-// ════════════════════════════════════════════════════════════
-
-class GeoBgPainter extends CustomPainter {
-  final Color color;
-  const GeoBgPainter({required this.color});
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = color;
-    final path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height * 0.72)
-      ..quadraticBezierTo(size.width / 2, size.height * 0.95, 0, size.height * 0.72)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
-  @override
-  bool shouldRepaint(GeoBgPainter old) => old.color != color;
-}
-
-class DoctorPainter extends CustomPainter {
-  const DoctorPainter();
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-
-    // Shadow
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(w * 0.5, h * 0.98), width: w * 0.7, height: 10),
-      Paint()..color = kOb200.withValues(alpha: 0.35),
-    );
-
-    // Legs
-    final legPaint = Paint()..color = kObDark;
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.30, h*0.80, w*0.14, h*0.20), const Radius.circular(6)), legPaint);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.56, h*0.80, w*0.14, h*0.20), const Radius.circular(6)), legPaint);
-
-    // Body / coat
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.20, h*0.38, w*0.60, h*0.46), const Radius.circular(10)), Paint()..color = kOb50);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.22, h*0.36, w*0.56, h*0.45), const Radius.circular(10)), Paint()..color = kObWhite);
-
-    // Lapels
-    final lapelPaint = Paint()..color = kOb50;
-    canvas.drawPath(Path()..moveTo(w*0.50, h*0.36)..lineTo(w*0.22, h*0.50)..lineTo(w*0.38, h*0.36)..close(), lapelPaint);
-    canvas.drawPath(Path()..moveTo(w*0.50, h*0.36)..lineTo(w*0.78, h*0.50)..lineTo(w*0.62, h*0.36)..close(), lapelPaint);
-
-    // Stethoscope
-    final stetPaint = Paint()..color = kOb400..strokeWidth = 3.5..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
-    canvas.drawPath(Path()..moveTo(w*0.38, h*0.48)..quadraticBezierTo(w*0.30, h*0.60, w*0.42, h*0.68)..quadraticBezierTo(w*0.50, h*0.74, w*0.58, h*0.65), stetPaint);
-    canvas.drawCircle(Offset(w*0.58, h*0.65), 5, Paint()..color = kOb500);
-
-    // Left arm
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.06, h*0.38, w*0.17, h*0.32), const Radius.circular(8)), Paint()..color = kOb50);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.08, h*0.36, w*0.16, h*0.32), const Radius.circular(8)), Paint()..color = kObWhite);
-    // Right arm
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.76, h*0.38, w*0.17, h*0.32), const Radius.circular(8)), Paint()..color = kOb50);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.76, h*0.36, w*0.16, h*0.32), const Radius.circular(8)), Paint()..color = kObWhite);
-
-    // Hands
-    final skinPaint = Paint()..color = kObSkin;
-    canvas.drawCircle(Offset(w*0.15, h*0.67), 9, skinPaint);
-    canvas.drawCircle(Offset(w*0.84, h*0.67), 9, skinPaint);
-
-    // Neck + head
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.42, h*0.22, w*0.16, h*0.16), const Radius.circular(6)), skinPaint);
-    canvas.drawOval(Rect.fromCenter(center: Offset(w*0.50, h*0.14), width: w*0.36, height: h*0.22), skinPaint);
-
-    // Hair
-    canvas.drawOval(Rect.fromCenter(center: Offset(w*0.50, h*0.085), width: w*0.36, height: h*0.12), Paint()..color = kObHair);
-
-    // Eyes
-    canvas.drawCircle(Offset(w*0.43, h*0.145), 3, Paint()..color = kOb700);
-    canvas.drawCircle(Offset(w*0.57, h*0.145), 3, Paint()..color = kOb700);
-
-    // Smile
-    canvas.drawArc(
-      Rect.fromCenter(center: Offset(w*0.50, h*0.175), width: 20, height: 10),
-      0.3, math.pi - 0.6, false,
-      Paint()..color = kObRed..strokeWidth = 1.5..style = PaintingStyle.stroke..strokeCap = StrokeCap.round,
-    );
-
-    // Pocket + cross badge
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.54, h*0.46, w*0.14, w*0.10), const Radius.circular(4)), Paint()..color = kOb50);
-    canvas.drawRect(Rect.fromCenter(center: Offset(w*0.61, h*0.51), width: 8, height: 2.5), Paint()..color = kObRed);
-    canvas.drawRect(Rect.fromCenter(center: Offset(w*0.61, h*0.51), width: 2.5, height: 8), Paint()..color = kObRed);
-  }
-  @override
-  bool shouldRepaint(DoctorPainter old) => false;
-}
-
-class DoctorClipboardPainter extends CustomPainter {
-  const DoctorClipboardPainter();
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-    final skinPaint = Paint()..color = kObSkin;
-    final coatPaint = Paint()..color = kObWhite;
-
-    // Shadow
-    canvas.drawOval(Rect.fromCenter(center: Offset(w*0.5, h*0.98), width: w*0.65, height: 9), Paint()..color = kOb200.withValues(alpha: 0.30));
-
-    // Legs
-    final darkPaint = Paint()..color = kObDark;
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.30, h*0.80, w*0.14, h*0.20), const Radius.circular(6)), darkPaint);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.56, h*0.80, w*0.14, h*0.20), const Radius.circular(6)), darkPaint);
-
-    // Body
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.22, h*0.36, w*0.56, h*0.46), const Radius.circular(10)), coatPaint);
-
-    // Clipboard
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.04, h*0.40, w*0.22, h*0.30), const Radius.circular(8)), Paint()..color = const Color(0xFFF0F3F8));
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.12, h*0.37, w*0.06, h*0.06), const Radius.circular(3)), Paint()..color = kOb400);
-    for (int i = 0; i < 4; i++) {
-      canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.07, h*(0.46 + i*0.055), w*(i == 1 ? 0.10 : 0.16), 2.5), const Radius.circular(1)), Paint()..color = kOb200);
-    }
-    // Checkmark
-    final checkPath = Path()..moveTo(w*0.07, h*0.665)..lineTo(w*0.10, h*0.690)..lineTo(w*0.155, h*0.648);
-    canvas.drawPath(checkPath, Paint()..color = kObGreen..strokeWidth = 2..style = PaintingStyle.stroke..strokeCap = StrokeCap.round);
-
-    // Left arm
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.04, h*0.36, w*0.20, h*0.32), const Radius.circular(8)), Paint()..color = kOb50);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.05, h*0.34, w*0.18, h*0.32), const Radius.circular(8)), coatPaint);
-    // Right arm
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.77, h*0.38, w*0.16, h*0.28), const Radius.circular(8)), coatPaint);
-    canvas.drawCircle(Offset(w*0.85, h*0.66), 8, skinPaint);
-
-    // Neck + head
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.42, h*0.22, w*0.16, h*0.16), const Radius.circular(6)), skinPaint);
-    canvas.drawOval(Rect.fromCenter(center: Offset(w*0.50, h*0.14), width: w*0.36, height: h*0.22), skinPaint);
-
-    // Hair (green for variety)
-    canvas.drawOval(Rect.fromCenter(center: Offset(w*0.50, h*0.085), width: w*0.36, height: h*0.12), Paint()..color = const Color(0xFF4A6741));
-
-    // Eyes
-    canvas.drawCircle(Offset(w*0.43, h*0.145), 3, Paint()..color = kOb700);
-    canvas.drawCircle(Offset(w*0.57, h*0.145), 3, Paint()..color = kOb700);
-
-    // Stethoscope
-    canvas.drawPath(Path()..moveTo(w*0.42, h*0.46)..quadraticBezierTo(w*0.62, h*0.55, w*0.65, h*0.65),
-        Paint()..color = kOb400..strokeWidth = 3..style = PaintingStyle.stroke..strokeCap = StrokeCap.round);
-    canvas.drawCircle(Offset(w*0.65, h*0.65), 5, Paint()..color = kOb500);
-  }
-  @override
-  bool shouldRepaint(DoctorClipboardPainter old) => false;
-}
-
-class ClinicBuildingPainter extends CustomPainter {
-  const ClinicBuildingPainter();
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-
-    // Ground shadow
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(w*0.50, h*0.99), width: w*0.80, height: 12),
-      Paint()..color = kOb200.withValues(alpha: 0.40),
-    );
-
-    // Building body
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.10, h*0.30, w*0.80, h*0.70), const Radius.circular(10)), Paint()..color = kOb50);
-
-    // Roof
-    canvas.drawPath(Path()..moveTo(w*0.06, h*0.33)..lineTo(w*0.50, h*0.05)..lineTo(w*0.94, h*0.33)..close(), Paint()..color = kOb500);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.10, h*0.30, w*0.80, h*0.04), const Radius.circular(4)), Paint()..color = kOb200);
-
-    // Windows row 1
-    final winPaint = Paint()..color = kOb400.withValues(alpha: 0.30);
-    for (int i = 0; i < 3; i++) {
-      canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*(0.17 + i*0.25), h*0.40, w*0.16, h*0.16), const Radius.circular(6)), winPaint);
-    }
-    // Windows row 2
-    for (int i = 0; i < 3; i++) {
-      canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*(0.17 + i*0.25), h*0.62, w*0.16, h*0.16), const Radius.circular(6)), winPaint);
-    }
-
-    // Door
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.38, h*0.70, w*0.24, h*0.30), const Radius.circular(8)), Paint()..color = kOb400.withValues(alpha: 0.20));
-    canvas.drawArc(Rect.fromLTWH(w*0.38, h*0.62, w*0.24, w*0.24), math.pi, math.pi, false, Paint()..color = kOb400.withValues(alpha: 0.20));
-
-    // Medical cross
-    canvas.drawRect(Rect.fromCenter(center: Offset(w*0.50, h*0.19), width: 18, height: 5), Paint()..color = kObRed);
-    canvas.drawRect(Rect.fromCenter(center: Offset(w*0.50, h*0.19), width: 5, height: 18), Paint()..color = kObRed);
-  }
-  @override
-  bool shouldRepaint(ClinicBuildingPainter old) => false;
 }

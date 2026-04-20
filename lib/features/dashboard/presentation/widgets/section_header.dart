@@ -38,13 +38,13 @@ class SectionHeader extends StatelessWidget {
                   vertical: AppSpacing.s4,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.softBlue,
+                  color: AppColors.primary100,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   actionLabel!,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.accentBlue,
+                    color: AppColors.primary700,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -55,3 +55,4 @@ class SectionHeader extends StatelessWidget {
     );
   }
 }
+

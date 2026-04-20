@@ -48,14 +48,14 @@ class ActivityTile extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: iconBgColor ?? AppColors.softGreen,
+                color: iconBgColor ?? AppColors.primary100,
                 borderRadius: BorderRadius.circular(AppRadius.r12),
               ),
               child: Center(
                 child: FaIcon(
                   icon,
                   size: 16,
-                  color: iconColor ?? AppColors.primaryGreen,
+                  color: iconColor ?? AppColors.primary500,
                 ),
               ),
             ),
@@ -99,3 +99,4 @@ class ActivityTile extends StatelessWidget {
     );
   }
 }
+

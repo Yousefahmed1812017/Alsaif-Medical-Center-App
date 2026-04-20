@@ -21,14 +21,6 @@ class UserTypeSelectionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(flex: 1),
-              Center(
-                child: FaIcon(
-                  FontAwesomeIcons.hospitalUser,
-                  size: 64,
-                  color: AppColors.primary500,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.s32),
               Text(
                 isArabic ? 'نوع الحساب' : 'Account Type',
                 style: Theme.of(context).textTheme.headlineMedium,
@@ -46,25 +38,24 @@ class UserTypeSelectionScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.s48),
 
-              // Patient Flow Option
-              _AccountTypeCard(
-                icon: FontAwesomeIcons.bedPulse,
-                title: isArabic ? 'مريض' : 'Patient',
-                description: isArabic
-                    ? 'سجل دخولك كمريض لحجز ومتابعة المواعيد.'
-                    : 'Log in as a patient to book and manage appointments.',
-                onTap: () => context.push('/patient-type'),
-              ),
-              const SizedBox(height: AppSpacing.s16),
-
-              // Internal User Flow Option
-              _AccountTypeCard(
-                icon: FontAwesomeIcons.userTie,
-                title: isArabic ? 'متطوع / موظف أطباء' : 'Staff / Internal User',
-                description: isArabic
-                    ? 'تسجيل الدخول للكادر الطبي والموظفين والإدارة.'
-                    : 'Login for medical staff, employees, and management.',
-                onTap: () => context.push('/internal-login'),
+              Row(
+                children: [
+                  Expanded(
+                    child: _AccountTypeCard(
+                      imagePath: 'assets/images/Patient.png',
+                      title: isArabic ? 'مريض' : 'Patient',
+                      onTap: () => context.push('/patient-type'),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.s16),
+                  Expanded(
+                    child: _AccountTypeCard(
+                      imagePath: 'assets/images/doctor.png',
+                      title: isArabic ? 'موظف' : 'Staff',
+                      onTap: () => context.push('/internal-login'),
+                    ),
+                  ),
+                ],
               ),
               const Spacer(flex: 2),
             ],
@@ -77,63 +68,40 @@ class UserTypeSelectionScreen extends StatelessWidget {
 
 class _AccountTypeCard extends StatelessWidget {
   const _AccountTypeCard({
-    required this.icon,
+    required this.imagePath,
     required this.title,
-    required this.description,
     required this.onTap,
   });
 
-  final dynamic icon;
+  final String imagePath;
   final String title;
-  final String description;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return AppCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(AppSpacing.s24),
-      child: Row(
+      color: AppColors.primary100.withAlpha(60), // Soft blue background for the square
+      padding: const EdgeInsets.all(AppSpacing.s16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FaIcon(
-            icon,
-            size: 32,
-            color: AppColors.primary500,
+          Image.asset(
+            imagePath,
+            height: 150, // Larger image
+            fit: BoxFit.contain,
           ),
-          const SizedBox(width: AppSpacing.s20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.headingText,
-                      ),
+          const SizedBox(height: AppSpacing.s16),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.headingText,
                 ),
-                const SizedBox(height: AppSpacing.s8),
-                Text(
-                  description,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.mutedText,
-                      ),
-                ),
-              ],
-            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(width: AppSpacing.s16),
-          Directionality.of(context) == TextDirection.rtl
-              ? const FaIcon(
-                  FontAwesomeIcons.chevronLeft,
-                  size: 16,
-                  color: AppColors.border,
-                )
-              : const FaIcon(
-                  FontAwesomeIcons.chevronRight,
-                  size: 16,
-                  color: AppColors.border,
-                ),
         ],
       ),
     );

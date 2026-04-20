@@ -48,7 +48,7 @@ class EmployeeDashboardScreen extends StatelessWidget {
                           value: '24',
                           label: isArabic ? 'مكالمات اليوم' : "Today's Calls",
                           iconColor: AppColors.primary500,
-                          iconBgColor: AppColors.primary50,
+                          iconBgColor: AppColors.primary100,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.s12),
@@ -161,7 +161,7 @@ class EmployeeDashboardScreen extends StatelessWidget {
                         : 'Youssef Mohamed - Phone registration',
                     time: isArabic ? 'منذ ساعة' : '1 hr ago',
                     iconColor: AppColors.primary500,
-                    iconBgColor: AppColors.primary50,
+                    iconBgColor: AppColors.primary100,
                   ),
 
                   const SizedBox(height: AppSpacing.s24),

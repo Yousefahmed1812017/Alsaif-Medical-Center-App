@@ -16,12 +16,12 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      primaryColor: AppColors.primaryGreen,
+      primaryColor: AppColors.primary500,
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: const ColorScheme.light(
-        primary: AppColors.primaryGreen,
+        primary: AppColors.primary500,
         onPrimary: AppColors.white,
-        secondary: AppColors.accentBlue,
+        secondary: AppColors.primary700,
         onSecondary: AppColors.white,
         error: AppColors.error,
         onError: AppColors.white,
@@ -129,7 +129,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor: AppColors.primaryGreen,
+          backgroundColor: AppColors.primary500,
           foregroundColor: AppColors.white,
           textStyle: baseTextTheme.labelLarge?.copyWith(
             fontSize: 16,
@@ -149,8 +149,8 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           elevation: 0,
-          foregroundColor: AppColors.accentBlue,
-          side: const BorderSide(color: AppColors.accentBlue, width: 1.5),
+          foregroundColor: AppColors.primary500,
+          side: const BorderSide(color: AppColors.primary500, width: 1.5),
           textStyle: baseTextTheme.labelLarge?.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -168,7 +168,7 @@ class AppTheme {
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.accentBlue,
+          foregroundColor: AppColors.primary700,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.r16),
           ),
@@ -181,32 +181,32 @@ class AppTheme {
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.softSurface,
+        fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.s16,
-          vertical: AppSpacing.s16,
+          horizontal: 16,
+          vertical: 16,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.r16),
-          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.border, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.r16),
-          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.border, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.r16),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(
-            color: AppColors.primaryGreen,
+            color: AppColors.primary900,
             width: 1.5,
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.r16),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.error, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.r16),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.error, width: 1.5),
         ),
         hintStyle: baseTextTheme.bodyMedium?.copyWith(
@@ -243,9 +243,9 @@ class AppTheme {
       ),
 
       tabBarTheme: const TabBarThemeData(
-        labelColor: AppColors.primaryGreen,
+        labelColor: AppColors.primary500,
         unselectedLabelColor: AppColors.textSecondary,
-        indicatorColor: AppColors.primaryGreen,
+        indicatorColor: AppColors.primary500,
         indicatorSize: TabBarIndicatorSize.tab,
         dividerColor: Colors.transparent,
       ),
@@ -253,8 +253,8 @@ class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.softSurface,
         disabledColor: AppColors.border,
-        selectedColor: AppColors.softGreen,
-        secondarySelectedColor: AppColors.softGreen,
+        selectedColor: AppColors.primary100,
+        secondarySelectedColor: AppColors.primary100,
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.s12,
           vertical: AppSpacing.s8,
@@ -263,7 +263,7 @@ class AppTheme {
           color: AppColors.bodyText,
         ),
         secondaryLabelStyle: baseTextTheme.bodySmall?.copyWith(
-          color: AppColors.greenDark,
+          color: AppColors.primary900,
         ),
         brightness: Brightness.light,
         shape: RoundedRectangleBorder(
@@ -273,7 +273,7 @@ class AppTheme {
       ),
 
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.primary500,
         foregroundColor: AppColors.white,
         elevation: 4,
         highlightElevation: 8,
@@ -282,7 +282,7 @@ class AppTheme {
 
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.primaryGreen,
+        selectedItemColor: AppColors.primary500,
         unselectedItemColor: AppColors.mutedText,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
@@ -298,3 +298,4 @@ class AppTheme {
     );
   }
 }
+

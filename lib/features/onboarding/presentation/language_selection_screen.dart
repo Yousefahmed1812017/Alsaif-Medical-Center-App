@@ -60,7 +60,7 @@ class LanguageSelectionScreenState extends State<LanguageSelectionScreen>
   Future<void> onContinue() async {
     await StorageService.setSelectedLanguage(selectedCode);
     if (!mounted) return;
-    // Go to onboarding if not done yet, otherwise user-type
+    // After language selection, go to onboarding if not done, else user-type
     if (!StorageService.isOnboardingCompleted) {
       context.go('/onboarding');
     } else {
@@ -88,26 +88,40 @@ class LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                   children: [
                     const SizedBox(height: 52),
 
-                    // ── App logo / icon ──────────────────────
+                    // ── App icon from assets ──────────────────
                     Container(
-                      width: 72,
-                      height: 72,
+                      width: 88,
+                      height: 88,
                       decoration: BoxDecoration(
-                        color: kLsBlue700,
-                        borderRadius: BorderRadius.circular(20),
+                        color: kLsWhite,
+                        borderRadius: BorderRadius.circular(22),
                         boxShadow: [
                           BoxShadow(
-                            color: kLsBlue700.withValues(alpha: 0.28),
-                            blurRadius: 20,
+                            color: kLsBlue700.withValues(alpha: 0.15),
+                            blurRadius: 24,
                             offset: const Offset(0, 8),
                           ),
                         ],
                       ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.local_hospital_rounded,
-                          color: kLsWhite,
-                          size: 36,
+                      clipBehavior: Clip.antiAlias,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Image.asset(
+                          'assets/images/app_icon.png',
+                          fit: BoxFit.contain,
+                          errorBuilder: (ctx, err, stack) => Container(
+                            decoration: BoxDecoration(
+                              color: kLsBlue700,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.local_hospital_rounded,
+                                color: kLsWhite,
+                                size: 40,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -425,7 +439,6 @@ class HexPainter extends CustomPainter {
   }
 
   double _cos(double angle) {
-    // Use dart:math via import above
     return _mathCos(angle);
   }
 
